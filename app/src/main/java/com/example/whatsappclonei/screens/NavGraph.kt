@@ -14,7 +14,7 @@ import com.example.whatsappclonei.ui.onboarding.signUp.SignUpFullScreen
 fun NavGraph(
     modifier: Modifier = Modifier,
     startDestination: String = Screen.SignUpScreen.route,
-    signInScreenViewModel: SignInScreenViewModel= hiltViewModel()
+    signUpScreenViewModel: SignUpScreenViewModel= hiltViewModel()
 ) {
     val navController: NavHostController= rememberNavController()
     NavHost(

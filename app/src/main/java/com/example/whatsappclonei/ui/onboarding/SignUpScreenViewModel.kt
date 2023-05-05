@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignInScreenViewModel @Inject constructor(
+class SignUpScreenViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val context: Context,
     private val repo: AuthRepository

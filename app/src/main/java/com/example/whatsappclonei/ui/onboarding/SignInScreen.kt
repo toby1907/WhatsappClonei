@@ -18,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.whatsappclonei.R
 import com.example.whatsappclonei.ui.theme.WhatsappCloneiTheme
 import kotlinx.coroutines.launch
@@ -55,9 +54,9 @@ fun SignInFullScreen(
 @Composable
 fun SignInScreen(
     modifier: Modifier =Modifier,
-    viewModel: SignInScreenViewModel = hiltViewModel(),
+    viewModel: SignUpScreenViewModel = hiltViewModel(),
     navigateToSignUpScreen: () -> Unit,
-          snackbar: () ->Unit  ) {
+    snackbar: () ->Unit  ) {
     var emailText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
     Box(modifier = Modifier

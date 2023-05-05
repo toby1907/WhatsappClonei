@@ -1,9 +1,18 @@
 package com.example.whatsappclonei.ui.onboarding.signUp
 
+import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import com.example.whatsappclonei.data.AuthRepository
+import javax.inject.Inject
 
-class SignUpScreenViewModel {
+class SignInScreenViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val context: Context,
+    private val repo: AuthRepository
+): ViewModel() {
 
     fun onEvent(event: SignUpEvent){
         when(event){
