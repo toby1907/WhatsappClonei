@@ -1,4 +1,4 @@
-package com.example.whatsappclonei.ui.onboarding
+package com.example.whatsappclonei.ui.onboarding.signIn
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

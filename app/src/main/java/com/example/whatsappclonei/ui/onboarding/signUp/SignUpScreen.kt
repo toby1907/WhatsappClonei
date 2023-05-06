@@ -21,12 +21,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.whatsappclonei.R
 import com.example.whatsappclonei.data.Response
-import com.example.whatsappclonei.ui.onboarding.SignUpScreenViewModel
-import com.example.whatsappclonei.ui.onboarding.constants.VERIFY_EMAIL_MESSAGE
+import com.example.whatsappclonei.ui.onboarding.signIn.SignUpScreenViewModel
+import com.example.whatsappclonei.constants.VERIFY_EMAIL_MESSAGE
 import com.example.whatsappclonei.ui.theme.WhatsappCloneiTheme
 import com.example.whatsappclonei.utils.Utils.Companion.showMessage
 import kotlinx.coroutines.launch
-import kotlin.math.sign
 
 
 @OptIn(ExperimentalMaterial3Api::class)

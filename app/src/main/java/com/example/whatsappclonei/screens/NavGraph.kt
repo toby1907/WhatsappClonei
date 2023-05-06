@@ -7,14 +7,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.whatsappclonei.ui.onboarding.*
+import com.example.whatsappclonei.ui.onboarding.signIn.SignInFullScreen
+import com.example.whatsappclonei.ui.onboarding.signIn.SignUpScreenViewModel
 import com.example.whatsappclonei.ui.onboarding.signUp.SignUpFullScreen
+import com.example.whatsappclonei.ui.profile.ProfileScreen
+import com.example.whatsappclonei.ui.profile.VerifyEmailScreen
 
 @Composable
 fun NavGraph(
     modifier: Modifier = Modifier,
     startDestination: String = Screen.SignUpScreen.route,
-    signUpScreenViewModel: SignUpScreenViewModel= hiltViewModel()
+    signUpScreenViewModel: SignUpScreenViewModel = hiltViewModel()
 ) {
     val navController: NavHostController= rememberNavController()
     NavHost(
@@ -32,6 +35,26 @@ fun NavGraph(
            SignUpFullScreen {
                navController.navigate(Screen.SignInScreen.route)
            }
+        }
+
+        composable(
+            route = Screen.VerifyEmailScreen.route
+        ){
+            VerifyEmailScreen(
+                navigateToProfileScreen = {
+                    navController.navigate(Screen.ProfileScreen.route){
+                        popUpTo(navController.graph.id){
+                            inclusive =true
+                        }
+                    }
+                }
+            )
+        }
+
+        composable(
+            route = Screen.ProfileScreen.route
+        ){
+            ProfileScreen()
         }
     }
 }
