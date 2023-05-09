@@ -1,4 +1,4 @@
-package com.example.whatsappclonei.ui.onboarding.signIn
+package com.example.whatsappclonei.ui.onboarding.signUp
 
 import android.content.Context
 import androidx.compose.runtime.getValue

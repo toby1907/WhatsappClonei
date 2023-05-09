@@ -8,7 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.whatsappclonei.ui.onboarding.signIn.SignInFullScreen
-import com.example.whatsappclonei.ui.onboarding.signIn.SignUpScreenViewModel
+import com.example.whatsappclonei.ui.onboarding.signUp.SignUpScreenViewModel
 import com.example.whatsappclonei.ui.onboarding.signUp.SignUpFullScreen
 import com.example.whatsappclonei.ui.profile.ProfileScreen
 import com.example.whatsappclonei.ui.profile.VerifyEmailScreen
