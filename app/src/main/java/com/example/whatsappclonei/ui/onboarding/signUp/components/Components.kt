@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.whatsappclonei.Constants
 import com.example.whatsappclonei.Constants.WELCOME_MESSAGE
-import com.example.whatsappclonei.data.Response
+import com.example.whatsappclonei.data.model.Response
 import com.example.whatsappclonei.ui.onboarding.signUp.ProgressBar
 import com.example.whatsappclonei.ui.profile.ProfileViewModel
 import com.example.whatsappclonei.utils.Utils

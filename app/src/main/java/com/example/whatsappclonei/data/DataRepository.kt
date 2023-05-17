@@ -1,12 +1,13 @@
 package com.example.whatsappclonei.data
 
 
+import com.example.whatsappclonei.data.model.Response
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 
 
-typealias SignUpResponse = com.example.whatsappclonei.data.Response<Boolean>
+typealias SignUpResponse = Response<Boolean>
 typealias SendEmailVerificationResponse = Response<Boolean>
 typealias SignInResponse = Response<Boolean>
 typealias ReloadUserResponse = Response<Boolean>

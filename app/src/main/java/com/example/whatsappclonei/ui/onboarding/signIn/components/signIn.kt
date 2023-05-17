@@ -3,10 +3,9 @@ package com.example.whatsappclonei.ui.onboarding.signIn.components
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.whatsappclonei.data.Response
+import com.example.whatsappclonei.data.model.Response
 import com.example.whatsappclonei.ui.onboarding.signIn.SignInScreenViewModel
 import com.example.whatsappclonei.ui.onboarding.signUp.ProgressBar
-import com.example.whatsappclonei.utils.Utils.Companion.Print
 
 @Composable
 fun Signin(

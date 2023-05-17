@@ -1,6 +1,8 @@
 package com.example.whatsappclonei.data
 
+import com.example.whatsappclonei.data.model.Response
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.SharingStarted
@@ -12,7 +14,8 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val firebaseDatabase: FirebaseDatabase
 ) : AuthRepository {
     override val currentUser get() = auth.currentUser
 
@@ -20,7 +23,11 @@ class AuthRepositoryImpl @Inject constructor(
         email: String, password: String
     ): SignUpResponse {
         return try {
+            val id: String? = currentUser?.providerId
             auth.createUserWithEmailAndPassword(email, password).await()
+            if (id != null) {
+                firebaseDatabase.reference.child("Users").child(id).setValue(currentUser)
+            }
             Response.Success(true)
         } catch (e: Exception) {
             Response.Failure(e)

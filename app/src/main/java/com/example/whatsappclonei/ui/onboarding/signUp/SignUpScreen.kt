@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.whatsappclonei.R
-import com.example.whatsappclonei.data.Response
+import com.example.whatsappclonei.data.model.Response
 import com.example.whatsappclonei.constants.VERIFY_EMAIL_MESSAGE
 import com.example.whatsappclonei.ui.theme.WhatsappCloneiTheme
 import com.example.whatsappclonei.utils.Utils.Companion.showMessage

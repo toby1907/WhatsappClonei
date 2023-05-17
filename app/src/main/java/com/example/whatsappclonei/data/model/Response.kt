@@ -1,4 +1,4 @@
-package com.example.whatsappclonei.data
+package com.example.whatsappclonei.data.model
 
 sealed class Response<out T> {
     object Loading: Response<Nothing>()

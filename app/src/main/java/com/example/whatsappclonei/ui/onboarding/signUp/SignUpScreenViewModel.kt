@@ -8,7 +8,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.whatsappclonei.data.AuthRepository
-import com.example.whatsappclonei.data.Response
+import com.example.whatsappclonei.data.model.Response
 import com.example.whatsappclonei.data.SendEmailVerificationResponse
 import com.example.whatsappclonei.data.SignUpResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
