@@ -16,7 +16,7 @@ import com.example.whatsappclonei.ui.profile.VerifyEmailScreen
 @Composable
 fun NavGraph(
     modifier: Modifier = Modifier,
-    startDestination: String = Screen.SignUpScreen.route,
+    startDestination: String = Screen.SignInScreen.route,
     signUpScreenViewModel: SignUpScreenViewModel = hiltViewModel()
 ) {
     val navController: NavHostController= rememberNavController()

@@ -9,7 +9,7 @@ import com.example.whatsappclonei.Constants.TAG
 
 class Utils {
     companion object {
-        fun print(e: Exception) = Log.e(TAG, e.stackTraceToString())
+        fun Print(e: Exception) = Log.e(TAG, e.stackTraceToString())
 
         fun showMessage(
             context: Context,

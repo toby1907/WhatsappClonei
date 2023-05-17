@@ -11,9 +11,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.whatsappclonei.data.AuthRepository
 import com.example.whatsappclonei.data.Response
 import com.example.whatsappclonei.data.SignInResponse
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class SignInScreenViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val context: Context,
@@ -26,6 +28,7 @@ class SignInScreenViewModel @Inject constructor(
     fun signInWithEmailAndPassword(email: String,password: String) = viewModelScope.launch {
         signInResponse = Response.Loading
         signInResponse = repo.firebaseSignInWithEmailAndPassword(email, password)
+
     }
 
     fun onEvent(event: SignUpEvent){
