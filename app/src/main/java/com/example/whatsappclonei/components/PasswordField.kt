@@ -1,14 +1,19 @@
 package com.example.whatsappclonei.components
 
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import com.example.whatsappclonei.Constants.PASSWORD_LABEL
 import com.example.whatsappclonei.R
 
@@ -52,7 +57,8 @@ fun PasswordField(
             ) {
                 Icon(
                     painter = painterResource(icon),
-                    contentDescription = null
+                    contentDescription = null,
+                    modifier = Modifier.size(width = 16.dp, height = 16.dp)
                 )
             }
         }

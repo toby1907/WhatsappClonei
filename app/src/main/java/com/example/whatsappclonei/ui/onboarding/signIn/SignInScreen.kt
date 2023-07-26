@@ -51,21 +51,6 @@ fun SignInFullScreen(
                 navigateToSignUpScreen = navigateToSignUpScreen
             )
 
-            /* SignInScreen(
-                 modifier = Modifier
-                     .padding(innerPadding)
-                     .wrapContentSize(),
-                 navigateToSignUpScreen =navigateToSignUpScreen
-                 ,){
-
-                 // show snackbar as a suspend function
-                 scope.launch {
-                     snackbarHostState.showSnackbar(
-                         "Enter Credential"
-                     )
-                 }
-             }*/
-
         }
     )
     Signin(
@@ -95,11 +80,11 @@ fun SignInScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .wrapContentSize()
+
     ) {
         Image(
             contentScale = ContentScale.FillBounds,
-            painter = painterResource(id = R.drawable.manuel_will_gd3t5dtbwkw_unsplash),
+            painter = painterResource(id = R.drawable.background),
             contentDescription = ""
         )
 
@@ -109,6 +94,8 @@ fun SignInScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
+
+
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -154,7 +141,9 @@ fun SignInScreen(
                         )
                     }
                 }
-                Button(
+                Button(modifier = Modifier
+                    .width(236.dp)
+                    .height(45.dp),
                     onClick = {
                         snackbar.invoke()
                     },
@@ -175,7 +164,7 @@ fun SignInScreen(
 fun SiginFieldPreview() {
     WhatsappCloneiTheme {
         SignInScreen(modifier = Modifier,
-            viewModel = hiltViewModel(), {}, {})
+           viewModel = hiltViewModel<SignUpScreenViewModel>(), {}, {})
     }
 }
 
