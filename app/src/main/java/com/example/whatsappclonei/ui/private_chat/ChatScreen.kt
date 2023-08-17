@@ -1,5 +1,6 @@
 package com.example.whatsappclonei.ui.private_chat
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.BottomAppBar
@@ -24,11 +26,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -50,7 +54,7 @@ fun ChatScreen(
 ) {
 
     val user by viewModel.user.collectAsState()
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         viewModel.initialize(userId)
     }
     Scaffold(
@@ -72,14 +76,15 @@ fun ChatScreen(
                     }
                 },
 
-                        
+
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color(
                         0xFFFCFCFC
                     )
                 ),
                 navigationIcon = {
-                    Row(verticalAlignment = Alignment.CenterVertically,
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
                     ) {
                         IconButton(onClick = { /* go back */ }) {
@@ -100,15 +105,15 @@ fun ChatScreen(
                 },
                 actions = {
                     IconButton(onClick = { /* open profile */ }) {
-                       /* Icon(
-                            painterResource(R.drawable.placeholder_foreground),
-                            contentDescription = "Profile"
-                        )*/
-                      ProfilePictureWithIndicator(user?.userIcon)
+                        /* Icon(
+                             painterResource(R.drawable.placeholder_foreground),
+                             contentDescription = "Profile"
+                         )*/
+                        ProfilePictureWithIndicator(user?.userIcon)
                     }
                 },
 
-            )
+                )
 
         },
         bottomBar = {
@@ -116,12 +121,11 @@ fun ChatScreen(
             BottomAppBar(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
-                    ,
+                    .height(56.dp),
                 containerColor = Color(0xfffcfcfc),
             ) {
 
-                ChatBottomAppBar()
+                ChatBottomAppBar(viewModel = viewModel)
 
             }
 
@@ -134,13 +138,17 @@ fun ChatScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom
             ) {
-                ChatsScreen()
+                ChatsScreen(viewModel)
             }
         }
     )
 }
+
 @Composable
-fun ChatBottomAppBar(){
+fun ChatBottomAppBar(viewModel:PrivateChatScreenViewModel) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     // Row to arrange elements horizontally
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -155,13 +163,44 @@ fun ChatBottomAppBar(){
                 tint = Color.Black
             )
         }
-        ChatEditText()
+        // Create a mutable state variable to store the current icon
+        val currentIcon = remember { mutableStateOf(R.drawable.microphone) }
+        ChatEditText(
+            text = viewModel.messageState.value.message,
+            // Update the icon based on the text input
+            onValueChange = { text ->
+                viewModel.onMessageChange(text)
 
-        // Microphone icon
-        IconButton(onClick = { /*TODO*/ }) {
+                if (text.isEmpty()) {
+                    currentIcon.value = R.drawable.microphone
+                } else {
+                    currentIcon.value = R.drawable.send_icon
+                }
+            }
+        )
+
+        // Microphone/Send icon
+        IconButton(
+            onClick = {
+                // Send the message if the icon is send
+                if (currentIcon.value == R.drawable.send_icon) {
+
+                        viewModel.onMessageSent()
+                    keyboardController?.hide()
+viewModel.messageState.value = viewModel.messageState.value.copy(message = "")
+
+                } else {
+                    // TODO: record voice logic
+                }
+            },
+            // Add a circle shape and a green background
+            modifier = Modifier.background(color = Color.Green, shape = CircleShape),
+
+            ) {
+
             Icon(
-                painter = painterResource(id = R.drawable.microphone),
-                contentDescription = "Record voice",
+                painter = painterResource(id = currentIcon.value),
+                contentDescription = "Record voice or send message",
                 tint = Color.Black
             )
         }
@@ -170,12 +209,16 @@ fun ChatBottomAppBar(){
 
 
 @Composable
-fun ChatEditText(){
-    var text by rememberSaveable { mutableStateOf("") }
+fun ChatEditText( text: String,
+                  onValueChange: (newValue:String) -> Unit) {
+
+
 
     TextField(
         value = text,
-        onValueChange = { text = it },
+        onValueChange = {
+            onValueChange(it)
+        },
         placeholder = { Text("Type a message") },
         trailingIcon = {
             Icon(
@@ -186,10 +229,11 @@ fun ChatEditText(){
         }
     )
 }
+
 @Preview(showBackground = true)
 @Composable
 fun ChatScreenPreview() {
     WhatsappCloneiTheme {
-        ChatScreen({  }, "it.arguments?.getString(CHAT_ID")
+        ChatScreen({ }, "it.arguments?.getString(CHAT_ID")
     }
 }

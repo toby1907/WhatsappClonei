@@ -2,6 +2,7 @@ package com.example.whatsappclonei.data
 
 
 import androidx.compose.runtime.MutableState
+import com.example.whatsappclonei.data.model.MessageModel
 import com.example.whatsappclonei.data.model.Response
 import com.example.whatsappclonei.data.model.User
 import com.google.firebase.auth.FirebaseUser
@@ -41,5 +42,8 @@ interface AuthRepository {
     fun getAuthState(viewModelScope: CoroutineScope): AuthStateResponse
    suspend fun getAccounts() : AccountsResponse
    suspend fun getUser(userId:String): Flow<User>
+
+   suspend fun createChats(message1:String,receiverId:String): Flow<Boolean>
+   suspend fun getChats(receiverId:String): Flow<List<MessageModel>>
 
 }

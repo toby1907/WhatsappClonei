@@ -1,7 +1,7 @@
 package com.example.whatsappclonei.data.model
 
 // Data class for message model
-data class Message(
+data class MessageModel(
     val uid: String,
     val message: String,
 

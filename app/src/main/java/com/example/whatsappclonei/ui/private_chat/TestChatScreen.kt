@@ -16,6 +16,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,42 +26,52 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.whatsappclonei.Constants.RECEIVER_VIEW_TYPE
 import com.example.whatsappclonei.Constants.SENDER_VIEW_TYPE
 import com.example.whatsappclonei.R
-import com.example.whatsappclonei.data.model.Message
-import com.example.whatsappclonei.ui.theme.WhatsappCloneiTheme
+import com.example.whatsappclonei.data.model.MessageModel
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun ChatsScreen() {
+fun ChatsScreen(viewModel: PrivateChatScreenViewModel) {
+    val messages by viewModel.messages.collectAsState()
 
+ /*   val messageModelModels : List<MessageModel> = emptyList()
+    return if(messageModelModels[position].uid == FirebaseAuth.getInstance().uid){
+
+        SENDER_VIEW_TYPE
+    } else{
+        RECEIVER_VIEW_TYPE
+    }*/
 
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
-        items(10) { index ->
+        items(messages.size) { index ->
+
+             val viewType = getItemViewType(index, messages)
+
+
             BoxWithConstraints(
                 modifier = Modifier.fillMaxWidth()
             ) {
 
 
-                if (index % 2 == 0) {
+                if (viewType == SENDER_VIEW_TYPE) {
                     SenderChat(
-                        message = "This is a sender chat",
+                        message = messages[index]!!.message,
                         maxWidth = maxWidth,
                         backgroundColor = Color(0xFF1EBE71),
                         textColor = Color.White
                     )
                 } else {
                     ReceiverChat(
-                        message = "I plan to go to Norway, Tom said that you can tell about interesting places. I am very interested in the city of Stavanger. Have you been to this city?",
+                        message = messages[index]!!.message,
                         maxWidth = maxWidth,
-                        backgroundColor =  Color(0xFFF2F2F2),
+                        backgroundColor = Color(0xFFF2F2F2),
                         textColor = Color(0xFF000000)
                     )
                 }
@@ -162,9 +174,9 @@ fun ReceiverChat(
     }
 }
 
-fun getItemViewType(position:Int) : Int {
-    val messageModels : List<Message> = emptyList()
-    return if(messageModels.get(position).uid == FirebaseAuth.getInstance().uid){
+fun getItemViewType(position:Int,messageModels:List<MessageModel?>) : Int {
+   // val messageModelModels : List<MessageModel> = emptyList()
+    return if(messageModels[position]?.uid == FirebaseAuth.getInstance().uid){
 
         SENDER_VIEW_TYPE
     } else{
@@ -172,10 +184,3 @@ fun getItemViewType(position:Int) : Int {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ChatsScreenPreview() {
-    WhatsappCloneiTheme {
-        ChatsScreen()
-    }
-}
