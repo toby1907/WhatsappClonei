@@ -18,10 +18,12 @@ object Constants {
     const val SIGN_UP_SCREEN = "Sign up"
     const val VERIFY_EMAIL_SCREEN = "Verify email"
     const val PROFILE_SCREEN = "Profile"
+    const val MESSAGES_SCREEN = "Messages"
 
     //Labels
     const val EMAIL_LABEL = "Email"
     const val PASSWORD_LABEL = "Password"
+    const val USERNAME_LABEL = "Username"
 
     //Useful
     const val NO_VALUE = ""
@@ -44,4 +46,7 @@ object Constants {
 
     //Error Messages
     const val SENSITIVE_OPERATION_MESSAGE = "This operation is sensitive and requires recent authentication. Log in again before retrying this request."
+    // view type
+    const val SENDER_VIEW_TYPE = 1
+    const val  RECEIVER_VIEW_TYPE = 2
 }

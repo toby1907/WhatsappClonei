@@ -11,12 +11,14 @@ import com.example.whatsappclonei.ui.onboarding.signUp.ProgressBar
 fun Signin(
     viewModel: SignInScreenViewModel = hiltViewModel(),
     showErrorMessage: (errorMessage: String?) -> Unit,
-    showSnackbar: () -> Unit
+    showSnackbar: () -> Unit,
+    onSignIn: () -> Unit
 ) {
     when (val signInResponse = viewModel.signInResponse) {
         is Response.Loading -> ProgressBar()
         is Response.Success -> signInResponse.apply {
 showSnackbar.invoke()
+
         }
         is Response.Failure -> signInResponse.apply {
             LaunchedEffect(e) {

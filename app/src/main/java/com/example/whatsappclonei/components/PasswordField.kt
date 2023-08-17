@@ -20,8 +20,8 @@ import com.example.whatsappclonei.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordField(
-    password: TextFieldValue,
-    onPasswordValueChange: (newValue: TextFieldValue) -> Unit
+    password: String,
+    onPasswordValueChange: (newValue: String) -> Unit
 ) {
     var passwordIsVisible by remember { mutableStateOf(false) }
 

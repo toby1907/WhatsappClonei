@@ -1,6 +1,7 @@
 package com.example.whatsappclonei.ui.onboarding.signIn
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,69 +9,98 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.whatsappclonei.Constants.TAG
+import com.example.whatsappclonei.components.ext.isValidEmail
 import com.example.whatsappclonei.data.AuthRepository
-import com.example.whatsappclonei.data.model.Response
 import com.example.whatsappclonei.data.SignInResponse
+import com.example.whatsappclonei.data.model.Response
+import com.example.whatsappclonei.screens.LOGIN_SCREEN
+import com.example.whatsappclonei.screens.MESSAGE_SCREEN
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.example.whatsappclonei.R.string as AppText
 
 @HiltViewModel
 class SignInScreenViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val context: Context,
     private val repo: AuthRepository
-): ViewModel() {
+) : ViewModel() {
+
+
+    private val _message = MutableStateFlow("")
+    val message: StateFlow<String> = _message
+
+    fun postMessage(message: String) {
+        // Do something with the message
+        _message.value = message
+    }
 
     var signInResponse by mutableStateOf<SignInResponse>(Response.Success(false))
-    private set
+        private set
 
-    fun signInWithEmailAndPassword(email: String,password: String) = viewModelScope.launch {
+    fun signInWithEmailAndPassword(email: String, password: String,openAndPopUp: (String, String) -> Unit) = viewModelScope.launch {
         signInResponse = Response.Loading
-        signInResponse = repo.firebaseSignInWithEmailAndPassword(email, password)
+        signInResponse = repo.firebaseSignInWithEmailAndPassword(email, password,openAndPopUp)
 
     }
 
-    fun onEvent(event: SignUpEvent){
-        when(event){
 
-            is SignUpEvent.SignUp ->{
 
-            }
-            is SignUpEvent.SignUpCredentials ->{
+    var uiState = mutableStateOf(LoginUiState())
+        private set
 
-            }
+    private val email
+        get() = uiState.value.email
+    private val password
+        get() = uiState.value.password
+
+    fun onEmailChange(newValue: String) {
+        uiState.value = uiState.value.copy(email = newValue)
+    }
+
+    fun onPasswordChange(newValue: String) {
+        uiState.value = uiState.value.copy(password = newValue)
+    }
+
+    fun onSignInClick(openAndPopUp: (String, String) -> Unit) {
+        if (!email.isValidEmail()) {
+            // SnackbarManager.showMessage(AppText.email_error)
+            postMessage(AppText.email_error.toString())
+            return
         }
-    }
-    data class SignUpState(
-        val EmailText: String = "",
-        val PasswordText: String = ""
-    )
-    private  val _emailText = mutableStateOf(
-        SignUpState()
-    )
-    val emailText: State<SignUpState> = _emailText
 
-    sealed class SignUpEvent{
+        if (password.isBlank()) {
+            //SnackbarManager.showMessage(AppText.empty_password_error)
+            postMessage(AppText.empty_password_error.toString())
+            return
+        }
 
-        data class SignUpCredentials(val email: String, val password: String): SignUpEvent()
-        object SignUp: SignUpEvent()
+        signInWithEmailAndPassword(email, password,openAndPopUp)
 
-    }
-    /*
-    var signUpResponse by mutableStateOf<SignUpResponse>(Success(false))
-        private set
-    var sendEmailVerificationResponse by mutableStateOf<SendEmailVerificationResponse>(Success(false))
-        private set
+/*when(signInResponse){
+    is Response.Failure -> Log.d(TAG,"it failed")
+    Response.Loading -> Log.d(TAG, "its still loading")
+    is Response.Success ->   openAndPopUp(MESSAGE_SCREEN, LOGIN_SCREEN)
+}*/
 
-    fun signUpWithEmailAndPassword(email: String, password: String) = viewModelScope.launch {
-        signUpResponse = Loading
-        signUpResponse = repo.firebaseSignUpWithEmailAndPassword(email, password)
+
     }
 
-    fun sendEmailVerification() = viewModelScope.launch {
-        sendEmailVerificationResponse = Loading
-        sendEmailVerificationResponse = repo.sendEmailVerification()
-    }
-    */
+    /*  fun onForgotPasswordClick() {
+          if (!email.isValidEmail()) {
+              SnackbarManager.showMessage(AppText.email_error)
+              return
+          }
+
+          launchCatching {
+              accountService.sendRecoveryEmail(email)
+              SnackbarManager.showMessage(AppText.recovery_email_sent)
+          }
+      }*/
+
+
 }

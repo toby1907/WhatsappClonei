@@ -5,15 +5,14 @@ import android.content.Context
 import com.example.whatsappclonei.data.AuthRepository
 import com.example.whatsappclonei.data.AuthRepositoryImpl
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 
 @Module
@@ -22,6 +21,11 @@ class AppModule {
 
     @Provides
     fun provideContext(application: Application): Context = application.applicationContext
+
+    @Provides
+    fun provideFirestore(): FirebaseFirestore {
+        return FirebaseFirestore.getInstance()
+    }
 @Provides
-fun provideAuthRepository(): AuthRepository = AuthRepositoryImpl(auth = Firebase.auth, firebaseDatabase = Firebase.database)
+fun provideAuthRepository(): AuthRepository = AuthRepositoryImpl(auth = Firebase.auth, firestore =Firebase.firestore, fireStorage = FirebaseStorage.getInstance())
 }

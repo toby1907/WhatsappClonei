@@ -1,14 +1,18 @@
 package com.example.whatsappclonei.ui.profile
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.whatsappclonei.Greeting
 import com.example.whatsappclonei.data.AuthRepository
 import com.example.whatsappclonei.data.ReloadUserResponse
 import com.example.whatsappclonei.data.model.Response
 import com.example.whatsappclonei.data.RevokeAccessResponse
+import com.example.whatsappclonei.ui.theme.WhatsappCloneiTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +20,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private  val repo: AuthRepository
-): ViewModel(){
+): ViewModel()
+{
+
     var revokeAccessResponse by mutableStateOf<RevokeAccessResponse>(Response.Success(false))
     private  set
     var reloadUserResponse by mutableStateOf<ReloadUserResponse>(Response.Success(false))

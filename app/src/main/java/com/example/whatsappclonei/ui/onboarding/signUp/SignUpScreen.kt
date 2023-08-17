@@ -6,6 +6,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -13,23 +14,25 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.whatsappclonei.R
 import com.example.whatsappclonei.data.model.Response
 import com.example.whatsappclonei.constants.VERIFY_EMAIL_MESSAGE
-import com.example.whatsappclonei.ui.theme.WhatsappCloneiTheme
+import com.example.whatsappclonei.ui.onboarding.signUp.components.SignUpContent
 import com.example.whatsappclonei.utils.Utils.Companion.showMessage
-import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun SignUpFullScreen(
+    openAndPopUp: (String, String) -> Unit,
     navigateBack: () -> Unit
 ) {
     val context = LocalContext.current
@@ -39,7 +42,7 @@ fun SignUpFullScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         content = { innerPadding ->
-            SignUpScreen(
+          /*  SignUpScreen(
                 modifier = Modifier
                     .padding(innerPadding)
                     .wrapContentSize(),
@@ -60,6 +63,13 @@ fun SignUpFullScreen(
                         password
                     )
                 }
+            )*/
+            SignUpContent(
+                padding = innerPadding,
+                onSignUp = openAndPopUp,
+                snackBar = { /*TODO*/ },
+                navigateToSignInScreen = navigateBack,
+                viewModel = viewModel
             )
 
             SignUp(
@@ -92,7 +102,7 @@ fun SendEmailVerification(
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
-    navigateBack: () -> Unit,
+    navigateBack: (String,String) -> Unit,
     snackBar: () -> Unit,
     signUp: (email: String, password: String) -> Unit
 ) {
@@ -111,41 +121,45 @@ fun SignUpScreen(
 
         Image(
             contentScale = ContentScale.FillBounds,
-            painter = painterResource(id = R.drawable.w1),
+            painter = painterResource(id = R.drawable.background),
             contentDescription = "",
             modifier = Modifier.matchParentSize()
         )
 
         Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             //CircularProgress
             if (progressDialog) {
                 CircularProgressIndicator()
             }
             Spacer(Modifier.requiredHeight(30.dp))
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
 
-                ) {
 
                 Image(
-                    modifier = Modifier.size(60.dp),
-                    painter = painterResource(id = R.drawable.ic_whatsapp),
+                    painter = painterResource(id = R.drawable.logo),
                     contentDescription = stringResource(id = R.string.whatsapp_content_description),
-
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
                     )
-                Spacer(modifier = Modifier.size(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Welcome to WhatsAppClonei",
+// Geometria 24 | Medium
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight(500),
+                    color = Color(0xFF000000),
+                    textAlign = TextAlign.Center,
+                )
+            )
                 TextField(
                     value = usernameText,
                     onValueChange = { usernameText = it },
                     placeholder = { Text(text = "Username") },
-                    colors = TextFieldDefaults
-                        .outlinedTextFieldColors(textColor = Color.LightGray)
+
 
 
                 )
@@ -153,8 +167,6 @@ fun SignUpScreen(
                     value = emailText,
                     onValueChange = { emailText = it },
                     placeholder = { Text(text = "Email") },
-                    colors = TextFieldDefaults
-                        .outlinedTextFieldColors(textColor = Color.LightGray)
 
 
                 )
@@ -164,7 +176,6 @@ fun SignUpScreen(
                     label = { Text("Enter password") },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    colors = TextFieldDefaults.outlinedTextFieldColors()
                 )
                 Spacer(Modifier.size(4.dp))
                 Row(
@@ -174,7 +185,7 @@ fun SignUpScreen(
                 ) {
                     Spacer(Modifier.size(width = 220.dp, height = 0.dp))
                     TextButton(
-                        onClick = { navigateBack.invoke() },
+                        onClick = {  },
                     ) {
                         Text(
                             fontSize = 8.sp,
@@ -197,7 +208,7 @@ fun SignUpScreen(
                 ) {
                     Text(text = "Sign Up")
                 }
-            }
+
 
         }
 
@@ -205,11 +216,3 @@ fun SignUpScreen(
 
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun SignUpPreview() {
-    WhatsappCloneiTheme {
-        SignUpScreen(modifier = Modifier, {}, {}, { _, _ -> { } })
-    }
-}

@@ -1,9 +1,12 @@
 package com.example.whatsappclonei.data
 
 
+import androidx.compose.runtime.MutableState
 import com.example.whatsappclonei.data.model.Response
+import com.example.whatsappclonei.data.model.User
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 
@@ -14,16 +17,18 @@ typealias ReloadUserResponse = Response<Boolean>
 typealias SendPasswordResetEmailResponse = Response<Boolean>
 typealias RevokeAccessResponse = Response<Boolean>
 typealias AuthStateResponse = StateFlow<Boolean>
+typealias AccountsResponse = Response<List<User>>
+typealias  UserResponse = Response<MutableState<User?>>
 
 interface AuthRepository {
 
     val currentUser: FirebaseUser?
 
-    suspend fun firebaseSignUpWithEmailAndPassword(email: String, password: String): SignUpResponse
+    suspend fun firebaseSignUpWithEmailAndPassword(email: String, password: String,username:String): SignUpResponse
 
     suspend fun sendEmailVerification(): SendEmailVerificationResponse
 
-    suspend fun firebaseSignInWithEmailAndPassword(email: String, password: String): SignInResponse
+    suspend fun firebaseSignInWithEmailAndPassword(email: String, password: String,openAndPopUp: (String, String) -> Unit): SignInResponse
 
     suspend fun reloadFirebaseUser(): ReloadUserResponse
 
@@ -34,4 +39,7 @@ interface AuthRepository {
     suspend fun revokeAccess(): RevokeAccessResponse
 
     fun getAuthState(viewModelScope: CoroutineScope): AuthStateResponse
+   suspend fun getAccounts() : AccountsResponse
+   suspend fun getUser(userId:String): Flow<User>
+
 }

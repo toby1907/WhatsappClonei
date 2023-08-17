@@ -15,6 +15,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.whatsappclonei.Constants.EMAIL_LABEL
 import kotlinx.coroutines.job
@@ -22,8 +23,8 @@ import kotlinx.coroutines.job
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailField(
-    email: TextFieldValue,
-    onEmailValueChange: (newValue: TextFieldValue) -> Unit
+    email: String,
+    onEmailValueChange: (newValue:String) -> Unit
 ) {
     val focusRequester = FocusRequester()
 
