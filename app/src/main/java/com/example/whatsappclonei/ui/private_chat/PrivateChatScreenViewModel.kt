@@ -57,6 +57,7 @@ var senderId: String=""
             repo.getChats(senderId).collect{
                 messages.value = emptyList()
                 messages.value = it
+                Log.d(TAG,"list of messages during initalization ${messages.value}")
             }
         }
     }
@@ -70,9 +71,10 @@ viewModelScope.launch {
         else{
             Log.d(TAG,"message failed")
         }
-        repo.getChats(senderId).collect{
+        repo.loadChats(senderId).collect{ messagesList->
             messages.value = emptyList()
-            messages.value = it
+            messages.value = messagesList
+            Log.d(TAG,"list of messages after creation ${messages.value}")
         }
 
     }

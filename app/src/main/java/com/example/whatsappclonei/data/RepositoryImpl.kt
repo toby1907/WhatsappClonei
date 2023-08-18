@@ -11,6 +11,8 @@ import com.example.whatsappclonei.screens.LOGIN_SCREEN
 import com.example.whatsappclonei.screens.MESSAGE_SCREEN
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
@@ -199,13 +201,16 @@ class AuthRepositoryImpl @Inject constructor(
 
                 firestore.collection("messages")
                     .document(senderRoom)
-                    .set(message)
+                    .collection("chats")
+                    .add(message)
+
                     .await() // Suspend until the task is complete
                 Log.d(TAG, "Message added successfully")
                 // Add another document receiverRoom and set the same message
                 firestore.collection("messages")
                     .document(receiverRoom)
-                    .set(message)
+                    .collection("chats")
+                    .add(message)
                     .await() // Suspend until the task is complete
                 Log.d(TAG, "Message added successfully")
                 emit(true) // Emit true as a flow value
@@ -223,33 +228,78 @@ class AuthRepositoryImpl @Inject constructor(
         return callbackFlow {
 
             // Create the document name
-            val senderRoom = "${currentUser?.uid}$receiverId"
+            val senderRoom = "${currentUser?.uid}${receiverId.idFromParameter()}"
 
-            // Get the document reference
-            val document = firestore.collection("messages")
+            firestore.collection("messages")
                 .document(senderRoom)
+                .collection("chats")
+                .orderBy("timestamp", Query.Direction.ASCENDING)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    for (document in querySnapshot.documents) {
+                        val model = document.toObject<MessageModel>()
+                        messages.add(model)
+                    }
 
-            // Add a listener to the document
-            val listener = document.addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Log.w(TAG, "Error getting message", e)
-                    close(e) // Close the flow with the exception
-                    return@addSnapshotListener
-                }
-                if (snapshot != null && snapshot.exists()) {
-                    // Convert the snapshot to a message model
-                    val message = snapshot.toObject(MessageModel::class.java)
-                    messages.add(message)
-                    Log.d(TAG, "Message retrieved successfully")
-                    trySend(messages.toList().filterNotNull()) // Offer the message as a flow value
-                } else {
-                    trySend(emptyList()) // Offer null as a flow value
-                }
-            }
+                    // Send the list of messages through the flow
+                    trySend(messages.toList().filterNotNull())
 
-            // Invoke on close when the flow is cancelled or completed
+                    // Log the messages
+                    Log.d(TAG, "Messages: $messages")
+                }
+                .addOnFailureListener { exception ->
+                    // Handle the failure
+                    Log.e(TAG, "Error getting messages: $exception")
+
+                }
+
+            // Note: Don't close the flow here
+
+              awaitClose()
+
+            // The flow will be closed when the coroutine is canceled
+        }
+
+    }
+
+    override suspend fun loadChats(receiverId: String): Flow<List<MessageModel>> {
+        val messages = mutableStateListOf<MessageModel?>()
+
+        return callbackFlow {
+
+            // Create the document name
+            val senderRoom = "${currentUser?.uid}${receiverId.idFromParameter()}"
+
+            val listener = firestore.collection("messages")
+                .document(senderRoom)
+                .collection("chats")
+                .orderBy("timestamp", Query.Direction.ASCENDING)
+                .addSnapshotListener { querySnapshot, exception ->
+                    if (exception != null) {
+                        // Handle the error
+                        return@addSnapshotListener
+                    }
+
+                    if (querySnapshot != null) {
+                        messages.clear() // Clear the existing list before adding new data
+
+                        // Loop through the query snapshot to get each document
+                        for (documentSnapshot in querySnapshot.documents) {
+                            // Convert the document data to your model class
+                            val messageModel = documentSnapshot.toObject(MessageModel::class.java)
+                            if (messageModel != null) {
+                                messages.add(messageModel)
+                            }
+                        }
+
+                        // Send the updated list of messages through the flow
+                        trySend(messages.toList().filterNotNull())
+                    }
+                }
+
             awaitClose {
-                listener.remove() // Remove the listener
+                // Remove the listener when the flow is cancelled
+                listener.remove()
             }
         }
     }

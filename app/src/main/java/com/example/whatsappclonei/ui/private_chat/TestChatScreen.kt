@@ -1,5 +1,6 @@
 package com.example.whatsappclonei.ui.private_chat
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.whatsappclonei.Constants.RECEIVER_VIEW_TYPE
 import com.example.whatsappclonei.Constants.SENDER_VIEW_TYPE
+import com.example.whatsappclonei.Constants.TAG
 import com.example.whatsappclonei.R
 import com.example.whatsappclonei.data.model.MessageModel
 import com.google.firebase.auth.FirebaseAuth
@@ -38,7 +40,7 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun ChatsScreen(viewModel: PrivateChatScreenViewModel) {
     val messages by viewModel.messages.collectAsState()
-
+Log.d(TAG,"list of messages in chatsScreen $messages")
  /*   val messageModelModels : List<MessageModel> = emptyList()
     return if(messageModelModels[position].uid == FirebaseAuth.getInstance().uid){
 
