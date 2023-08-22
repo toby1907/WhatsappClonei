@@ -1,15 +1,21 @@
 package com.example.whatsappclonei.ui.private_chat
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.BottomAppBar
@@ -27,8 +33,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +40,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -118,16 +123,8 @@ fun ChatScreen(
         },
         bottomBar = {
 
-            BottomAppBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                containerColor = Color(0xfffcfcfc),
-            ) {
+            ChatBottomAppBar(viewModel = viewModel)
 
-                ChatBottomAppBar(viewModel = viewModel)
-
-            }
 
         },
         content = {
@@ -145,76 +142,95 @@ fun ChatScreen(
 }
 
 @Composable
-fun ChatBottomAppBar(viewModel:PrivateChatScreenViewModel) {
+fun ChatBottomAppBar(viewModel: PrivateChatScreenViewModel) {
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
     // Row to arrange elements horizontally
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+
+    BottomAppBar(
+        modifier = Modifier
+            .wrapContentHeight()
+            ,
+        containerColor = Color.White,
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        // Attach icon
-        IconButton(onClick = { /*TODO*/ }) {
-            Icon(
-                painter = painterResource(id = R.drawable.attach),
-                contentDescription = "Attach file",
-                tint = Color.Black
-            )
-        }
-        // Create a mutable state variable to store the current icon
-        val currentIcon = remember { mutableStateOf(R.drawable.microphone) }
-        ChatEditText(
-            text = viewModel.messageState.value.message,
-            // Update the icon based on the text input
-            onValueChange = { text ->
-                viewModel.onMessageChange(text)
-
-                if (text.isEmpty()) {
-                    currentIcon.value = R.drawable.microphone
-                } else {
-                    currentIcon.value = R.drawable.send_icon
-                }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Attach icon
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.attach),
+                    contentDescription = "Attach file",
+                    tint = Color.Black
+                )
             }
-        )
+            // Create a mutable state variable to store the current icon
+            val currentIcon = remember { mutableStateOf(R.drawable.microphone) }
+            ChatEditText(
+                text = viewModel.messageState.value.message,
+                // Update the icon based on the text input
+                onValueChange = { text ->
+                    viewModel.onMessageChange(text)
 
-        // Microphone/Send icon
-        IconButton(
-            onClick = {
-                // Send the message if the icon is send
-                if (currentIcon.value == R.drawable.send_icon) {
+                    if (text.isEmpty()) {
+                        currentIcon.value = R.drawable.microphone
+                    } else {
+                        currentIcon.value = R.drawable.send_icon
+                    }
+                }
+            )
+
+            // Microphone/Send icon
+            IconButton(
+                onClick = {
+                    // Send the message if the icon is send
+                    if (currentIcon.value == R.drawable.send_icon) {
 
                         viewModel.onMessageSent()
-                    keyboardController?.hide()
-viewModel.messageState.value = viewModel.messageState.value.copy(message = "")
+                        keyboardController?.hide()
+                        viewModel.messageState.value =
+                            viewModel.messageState.value.copy(message = "")
 
-                } else {
-                    // TODO: record voice logic
-                }
-            },
-            // Add a circle shape and a green background
-            modifier = Modifier.background(color = Color.Green, shape = CircleShape),
+                    } else {
+                        // TODO: record voice logic
+                    }
+                },
+                // Add a circle shape and a green background
+                modifier = Modifier
+                    .background(color = Color.White, shape = CircleShape)
+                    .width(48.dp)
+                    .height(48.dp),
 
-            ) {
+                ) {
 
-            Icon(
-                painter = painterResource(id = currentIcon.value),
-                contentDescription = "Record voice or send message",
-                tint = Color.Black
-            )
+                Icon(
+                    painter = painterResource(id = currentIcon.value),
+                    contentDescription = "Record voice or send message",
+                    tint = Color.Black
+                )
+            }
         }
+
     }
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatEditText( text: String,
-                  onValueChange: (newValue:String) -> Unit) {
+fun ChatEditText(
 
-
+    text: String,
+    onValueChange: (newValue: String) -> Unit
+) {
 
     TextField(
+        maxLines = 10,
         value = text,
         onValueChange = {
             onValueChange(it)
@@ -226,7 +242,12 @@ fun ChatEditText( text: String,
                 contentDescription = "Insert emoticon",
                 tint = Color.Black
             )
-        }
+        },
+        shape = RoundedCornerShape(40.dp),
+        modifier = Modifier
+            .width(248.dp)
+            .border(border = BorderStroke(0.dp, Color.Transparent))
+
     )
 }
 
