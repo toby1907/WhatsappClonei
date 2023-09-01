@@ -42,6 +42,12 @@ import com.example.whatsappclonei.Constants.TAG
 import com.example.whatsappclonei.R
 import com.example.whatsappclonei.data.model.MessageModel
 import com.google.firebase.auth.FirebaseAuth
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZoneOffset
+
 
 @Composable
 fun ChatsScreen(viewModel: PrivateChatScreenViewModel) {
@@ -77,7 +83,8 @@ fun ChatsScreen(viewModel: PrivateChatScreenViewModel) {
                         maxWidth = maxWidth,
                         backgroundColor = Color(0xFF1EBE71),
                         textColor = Color.White,
-                        senderCount = senderCount
+                        senderCount = senderCount,
+                        time = messages[index]!!.timestamp!!
                     )
                     senderCount.value = false
                 } else {
@@ -89,7 +96,8 @@ fun ChatsScreen(viewModel: PrivateChatScreenViewModel) {
                         maxWidth = maxWidth,
                         backgroundColor = Color(0xFFF2F2F2),
                         textColor = Color(0xFF000000),
-                        receiverCount = receiverCount
+                        receiverCount = receiverCount,
+                        time = messages[index]!!.timestamp!!
                     )
                     receiverCount.value = false
                 }
@@ -99,6 +107,7 @@ fun ChatsScreen(viewModel: PrivateChatScreenViewModel) {
     }
 }
 
+
 @Composable
 fun SenderChat(
     message: String,
@@ -106,8 +115,12 @@ fun SenderChat(
     backgroundColor: Color,
     textColor: Color,
     senderCount: MutableState<Boolean>,
+    time: Long
 ) {
     val shape = if (senderCount.value) 10.dp else 0.dp
+    val timeInSeconds = time / 1000
+    val dateTime = LocalDateTime.ofEpochSecond(timeInSeconds, 0, ZoneOffset.UTC)
+    val timex = dateTime.toLocalTime()
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -123,29 +136,48 @@ fun SenderChat(
                 .padding(16.dp)
                 .widthIn(max = maxWidth * 0.7f)
         ) {
-            Text(
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight(400),
-                    color = textColor
-                ),
-                text = message,
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.End
+            ) {
+                Text(
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight(400),
+                        color = textColor
+                    ),
+                    text = message,
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = timex.format(org.threeten.bp.format.DateTimeFormatter.ofPattern("hh:mm a")),
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight(300),
+                        color = Color(0xFFBEBEBE),
+                        textAlign = TextAlign.Left,
+                    )
+                )
+            }
+
+        }
+        if (!senderCount.value){
+            Image(
+                painter = painterResource(id = R.drawable.placeholder_foreground),
+                contentDescription = "Profile picture",
+                modifier = Modifier
+                    // Set image size to 40 dp
+                    .size(16.dp)
+                    // Clip image to be shaped as a circle
+                    .clip(CircleShape)
+                    // Align image to bottom end of row
+                    .align(Alignment.Bottom)
+
             )
         }
-        Image(
-            painter = painterResource(id = R.drawable.placeholder_foreground),
-            contentDescription = "Profile picture",
-            modifier = Modifier
-                // Set image size to 40 dp
-                .size(16.dp)
-                // Clip image to be shaped as a circle
-                .clip(CircleShape)
-                // Align image to bottom end of row
-                .align(Alignment.Bottom)
-
-        )
     }
 }
+
 
 
 @Composable
@@ -155,26 +187,32 @@ fun ReceiverChat(
     backgroundColor: Color,
     textColor: Color,
     receiverCount: MutableState<Boolean>,
+    time: Long
 ) {
     val shape = if (receiverCount.value) 10.dp else 0.dp
+    val timeInSeconds = time / 1000
+    val dateTime = LocalDateTime.ofEpochSecond(timeInSeconds, 0, ZoneOffset.UTC)
+    val timex = dateTime.toLocalTime()
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.Start
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.placeholder_foreground),
-            contentDescription = "Profile picture",
-            modifier = Modifier
-                // Set image size to 40 dp
-                .size(16.dp)
-                // Clip image to be shaped as a circle
-                .clip(CircleShape)
-                // Align image to bottom end of row
-                .align(Alignment.Bottom)
+        if(!receiverCount.value){
+            Image(
+                painter = painterResource(id = R.drawable.placeholder_foreground),
+                contentDescription = "Profile picture",
+                modifier = Modifier
+                    // Set image size to 40 dp
+                    .size(16.dp)
+                    // Clip image to be shaped as a circle
+                    .clip(CircleShape)
+                    // Align image to bottom end of row
+                    .align(Alignment.Bottom)
 
-        )
+            )
+        }
         Box(
             modifier = Modifier
                 .background(
@@ -197,7 +235,7 @@ fun ReceiverChat(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "12:52",
+                    text = timex.format(org.threeten.bp.format.DateTimeFormatter.ofPattern("hh:mm a")),
                     style = TextStyle(
                         fontSize = 10.sp,
                         fontWeight = FontWeight(300),

@@ -64,19 +64,20 @@ var senderId: String=""
 
     fun onMessageSent(){
 viewModelScope.launch {
-    repo.createChats(message,senderId).collect{
-        if(it){
-            Log.d(TAG,"message sent successfully")
-        }
-        else{
-            Log.d(TAG,"message failed")
-        }
-        repo.loadChats(senderId).collect{ messagesList->
-            messages.value = emptyList()
-            messages.value = messagesList
-            Log.d(TAG,"list of messages after creation ${messages.value}")
-        }
+    if (message.isNotEmpty()){
+        repo.createChats(message, senderId).collect {
+            if (it) {
+                Log.d(TAG, "message sent successfully")
+            } else {
+                Log.d(TAG, "message failed")
+            }
+            repo.loadChats(senderId).collect { messagesList ->
+                messages.value = emptyList()
+                messages.value = messagesList
+                Log.d(TAG, "list of messages after creation ${messages.value}")
+            }
 
+        }
     }
 
 }
