@@ -1,10 +1,12 @@
 package com.example.whatsappclonei.data
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import com.example.whatsappclonei.Constants.TAG
 import com.example.whatsappclonei.components.ext.idFromParameter
 import com.example.whatsappclonei.data.model.MessageModel
+import com.example.whatsappclonei.data.model.MessageType
 import com.example.whatsappclonei.data.model.Response
 import com.example.whatsappclonei.data.model.User
 import com.example.whatsappclonei.screens.LOGIN_SCREEN
@@ -22,6 +24,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.tasks.await
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -31,7 +34,7 @@ import kotlin.coroutines.suspendCoroutine
 class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
-    private val fireStorage: FirebaseStorage
+    private val fireStorage: FirebaseStorage,
 ) : AuthRepository {
 
     override val currentUser get() = auth.currentUser
@@ -187,7 +190,9 @@ class AuthRepositoryImpl @Inject constructor(
             uid = "${currentUser?.uid}",
             message = message1,
             messageId = "someMessageId",
-            timestamp = System.currentTimeMillis()
+            timestamp = System.currentTimeMillis(),
+            audioUrl = null,
+            messageType = MessageType.MESSAGE
         )
 
 
@@ -262,7 +267,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun loadChats(receiverId: String): Flow<List<MessageModel>> {
+    override suspend fun loadPrivateChats(receiverId: String): Flow<List<MessageModel>> {
         val messages = mutableStateListOf<MessageModel?>()
 
         return callbackFlow {
@@ -304,5 +309,65 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-}
+    override suspend fun sendRecordingMessage(audioPath: String,receiverId: String): Flow<Boolean> {
+        var message =MessageModel()
+        val senderRoom = "${currentUser?.uid}${receiverId.idFromParameter()}"
+        val receiverRoom = "${receiverId.idFromParameter()}${currentUser?.uid}"
+        //Create a Uri from the audio path
+        val audioUri = Uri.fromFile(File(audioPath))
 
+        //Create a child reference for the audio file under the user's UID
+        val audioRef =
+            fireStorage.reference.child(FirebaseAuth.getInstance().currentUser!!.uid + "/" + audioUri.lastPathSegment)
+
+        //Upload the audio file to Firebase Storage
+        val uploadTask = audioRef.putFile(audioUri)
+
+        //Register listeners for the upload task
+        uploadTask.addOnSuccessListener {
+            //Get the download URL of the audio file from Firebase Storage
+            audioRef.downloadUrl.addOnSuccessListener { uri ->
+
+                val audioUrl = uri.toString()
+
+                //Create a MessageModel object with the audio URL
+                message = MessageModel(
+                    uid = "${currentUser?.uid}",
+                    message = " ",
+                    messageId = "audioUri.lastPathSegment",
+                    timestamp = System.currentTimeMillis(),
+                    messageType = MessageType.RECORDING,
+                    audioUrl = audioUrl
+                )
+                // Create the document names
+
+
+            }
+
+        }
+        return flow {
+            // Add the message to the collection
+            try {
+
+                firestore.collection("messages")
+                    .document(senderRoom)
+                    .collection("chats")
+                    .add(message)
+
+                    .await() // Suspend until the task is complete
+                Log.d(TAG, "Message added successfully")
+                // Add another document receiverRoom and set the same message
+                firestore.collection("messages")
+                    .document(receiverRoom)
+                    .collection("chats")
+                    .add(message)
+                    .await() // Suspend until the task is complete
+                Log.d(TAG, "Message added successfully")
+                emit(true) // Emit true as a flow value
+            } catch (e: Exception) {
+                Log.w(TAG, "Error adding message", e)
+                emit(false) // Emit false as a flow value
+            }
+        }
+    }
+    }

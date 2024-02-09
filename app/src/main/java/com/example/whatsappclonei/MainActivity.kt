@@ -34,7 +34,8 @@ class MainActivity : ComponentActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         permissionToRecordAccepted = if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
             grantResults[0] == PackageManager.PERMISSION_GRANTED
-        } else {
+        }
+        else {
             false
         }
         if (!permissionToRecordAccepted) finish()
@@ -59,6 +60,7 @@ class MainActivity : ComponentActivity() {
 fun Greeting(name: String) {
     Text(text = "Hello $name!")
 }
+
 
 @Preview(showBackground = true)
 @Composable

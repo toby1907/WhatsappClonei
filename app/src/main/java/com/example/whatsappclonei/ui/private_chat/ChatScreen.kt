@@ -369,6 +369,8 @@ fun ChatEditText(
 @Composable
 fun ChatScreenPreview() {
     WhatsappCloneiTheme {
-        ChatScreen({ }, "it.arguments?.getString(CHAT_ID")
+        ChatEditText(text = "", onValueChange = {}) {
+            
+        }
     }
 }

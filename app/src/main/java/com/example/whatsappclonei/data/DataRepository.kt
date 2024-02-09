@@ -45,6 +45,7 @@ interface AuthRepository {
 
    suspend fun createChats(message1:String,receiverId:String): Flow<Boolean>
    suspend fun getChats(receiverId:String): Flow<List<MessageModel>>
-   suspend fun loadChats(receiverId: String): Flow<List<MessageModel>>
+   suspend fun loadPrivateChats(receiverId: String): Flow<List<MessageModel>>
+   suspend fun sendRecordingMessage(audioPath:String,receiverId: String): Flow<Boolean>
 
 }
