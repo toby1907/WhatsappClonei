@@ -32,6 +32,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,10 +54,10 @@ import com.example.whatsappclonei.components.countrycodepicker.model.CountryCode
 import com.example.whatsappclonei.components.countrycodepicker.utils.getFlagMasterResID
 import com.example.whatsappclonei.components.countrycodepicker.utils.getLibCountries
 import com.example.whatsappclonei.components.countrycodepicker.utils.searchCountryList
+import com.example.whatsappclonei.ui.onboarding.phone_no.ValidationViewModel
 
-class CountryCodePicker {
-
-    @Preview
+/*
+@Preview
     @Composable
     private fun PreviewCountryCodeDialog() {
         CountryCodeDialog(
@@ -82,7 +83,7 @@ class CountryCodePicker {
                 padding = 2.dp
             )
         }
-    }
+    }*/
 
     @Composable
     fun CountryCodeDialog(
@@ -100,13 +101,17 @@ class CountryCodePicker {
         dialogSearchHintColor: Color = Color.Gray,
         dialogTextSelectColor: Color = Color(0xff3898f0),
         dialogBackgroundColor: Color = Color.White,
-        isCountryIconRounded: Boolean = false
+        isCountryIconRounded: Boolean = false,
+        viewModel: ValidationViewModel
     ) {
         val countryList: List<CountryCode> = getLibCountries()
         var isPickCountry by remember { mutableStateOf(defaultSelectedCountry) }
         var isOpenDialog by remember { mutableStateOf(false) }
         var searchValue by remember { mutableStateOf("") }
 
+        LaunchedEffect(isPickCountry) {
+            viewModel.onCountryCodeChanged(isPickCountry)
+        }
         Card(
             modifier = modifier
                 .padding(3.dp)
@@ -311,4 +316,3 @@ class CountryCodePicker {
             }
         }
     }
-}

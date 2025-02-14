@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.example.whatsappclonei.data.AuthRepository
 import com.example.whatsappclonei.data.AuthRepositoryImpl
+import com.example.whatsappclonei.ui.onboarding.validation.JsonParser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -28,4 +29,10 @@ class AppModule {
     }
 @Provides
 fun provideAuthRepository(): AuthRepository = AuthRepositoryImpl(auth = Firebase.auth, firestore =Firebase.firestore, fireStorage = FirebaseStorage.getInstance())
+
+    @Provides
+    fun provideJsonParser(context: Context): JsonParser {
+        return JsonParser(context)
+    }
 }
+

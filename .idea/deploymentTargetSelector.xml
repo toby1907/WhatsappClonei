@@ -11,6 +11,9 @@
       <SelectionState runConfigName="PreviewCountryCodeDialogNoIconReducedPadding">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="AddPhoneNoScreenPreview">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>
