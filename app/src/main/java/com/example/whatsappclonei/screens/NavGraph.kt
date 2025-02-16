@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import com.example.whatsappclonei.WhatsappCloneiAppState
 import com.example.whatsappclonei.constants.VERIFY_EMAIL_SCREEN
 import com.example.whatsappclonei.ui.chats.MessageScreen
+import com.example.whatsappclonei.ui.onboarding.phone_no.AddPhoneNoScreen
 import com.example.whatsappclonei.ui.onboarding.signIn.SignInFullScreen
 import com.example.whatsappclonei.ui.onboarding.signUp.SignUpFullScreen
 import com.example.whatsappclonei.ui.private_chat.ChatScreen
@@ -83,7 +84,8 @@ fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState) {
     composable(
         route = MESSAGE_SCREEN
     ) {
-        MessageScreen(navigateProfile = { appState.navigate(PROFILE_SCREEN) }, openChat = {route ->appState.navigate(route)})
+        MessageScreen(navigateProfile = { appState.navigate(VERIFY_PHONE_SCREEN) },
+            openChat = {route ->appState.navigate(route)})
     }
 
     composable(
@@ -94,6 +96,12 @@ fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState) {
             popUpScreen = { appState.popUp() },
             userId = it.arguments?.getString(CHAT_ID) ?: CHAT_DEFAULT_ID
         )
+    }
+
+    composable(
+        route = VERIFY_PHONE_SCREEN,
+    ){
+        AddPhoneNoScreen()
     }
 
 

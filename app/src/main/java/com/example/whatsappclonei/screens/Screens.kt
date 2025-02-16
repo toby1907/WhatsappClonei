@@ -14,6 +14,7 @@ const val CHAT_SCREEN = "ChatScreen"
 const val TASKS_SCREEN = "TasksScreen"
 const val EDIT_TASK_SCREEN = "EditTaskScreen"
 const val PROFILE_SCREEN = "ProfileScreen"
+const val VERIFY_PHONE_SCREEN = "VerifyPhoneScreen"
 
 const val CHAT_ID = "chatId"
 const val CHAT_DEFAULT_ID = "-1"
