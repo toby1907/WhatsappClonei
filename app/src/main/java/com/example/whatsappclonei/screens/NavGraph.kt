@@ -18,6 +18,7 @@ import com.example.whatsappclonei.ui.onboarding.signUp.SignUpFullScreen
 import com.example.whatsappclonei.ui.private_chat.ChatScreen
 import com.example.whatsappclonei.ui.profile.ProfileScreen
 import com.example.whatsappclonei.ui.profile.VerifyEmailScreen
+import com.example.whatsappclonei.ui.splash.SplashScreen
 
 
 @Composable
@@ -34,7 +35,7 @@ fun rememberAppState(
 @Composable
 fun NavGraph(
     modifier: Modifier = Modifier,
-    startDestination: String = VERIFY_PHONE_SCREEN,
+    startDestination: String = SPLASH_SCREEN,
 ) {
     val appState = rememberAppState()
     NavHost(
@@ -84,7 +85,7 @@ fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState) {
     composable(
         route = MESSAGE_SCREEN
     ) {
-        MessageScreen(navigateProfile = { appState.navigate(VERIFY_PHONE_SCREEN) },
+        MessageScreen(navigateProfile = { appState.navigate(PROFILE_SCREEN) },
             openChat = {route ->appState.navigate(route)})
     }
 
@@ -102,6 +103,13 @@ fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState) {
         route = VERIFY_PHONE_SCREEN,
     ){
         AddPhoneNoScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+    }
+    composable(
+        route = SPLASH_SCREEN,
+    ){
+        SplashScreen(
+            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) },
+        )
     }
 
 
