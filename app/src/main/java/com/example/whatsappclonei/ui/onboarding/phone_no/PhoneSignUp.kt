@@ -14,7 +14,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,13 +28,40 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.whatsappclonei.components.countrycodepicker.ui.CountryCodeDialog
 import com.example.whatsappclonei.components.countrycodepicker.utils.getLibCountries
+import com.example.whatsappclonei.data.model.Response
+import com.example.whatsappclonei.screens.LOGIN_SCREEN
+import com.example.whatsappclonei.screens.MESSAGE_SCREEN
+import com.example.whatsappclonei.screens.VERIFY_PHONE_SCREEN
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddPhoneNoScreen( viewModel: ValidationViewModel = hiltViewModel()){
+fun AddPhoneNoScreen( viewModel: ValidationViewModel = hiltViewModel(),openAndPopUp: (String,String) -> Unit,){
+    val validationResult = viewModel.validationResult
+    val phoneNumber = viewModel.phoneNumber
+    val isCodeSent = viewModel.isCodeSent
+    val signInResponse = viewModel.signInResponse
+    val verificationCode = viewModel.verificationCode
 
+    val showCodeInput = remember{
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = signInResponse) {
+        if (signInResponse is Response.Success) {
+            // Navigate to the next screen
+           openAndPopUp(
+               MESSAGE_SCREEN, VERIFY_PHONE_SCREEN
+           )
+        }
+    }
+    LaunchedEffect(key1 = validationResult) {
+        if (validationResult == ValidationViewModel.ValidationResult.Valid) {
+            viewModel.sendVerificationCode()
+        }
+    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -48,7 +80,14 @@ fun AddPhoneNoScreen( viewModel: ValidationViewModel = hiltViewModel()){
                    Button(
                        enabled = viewModel.phoneNumber.length >= 10,
                        onClick = {
-                         if (viewModel.phoneNumber.length >= 10)  { viewModel.validatePhoneNumber() }
+                         if (viewModel.phoneNumber.length >= 10)  {
+                             if (isCodeSent){
+                                 showCodeInput.value = true
+                             }
+                             else {
+                                 viewModel.validatePhoneNumber()
+                             }
+                         }
                        },
                        colors = ButtonDefaults.buttonColors(
                            containerColor = Color.Transparent,
@@ -59,7 +98,7 @@ fun AddPhoneNoScreen( viewModel: ValidationViewModel = hiltViewModel()){
                        )
                    ) {
                        Text(
-                           text = "Done",
+                           text = if (isCodeSent)"Verify" else "Done",
                            style = TextStyle(
                                fontSize = 17.sp,
                                lineHeight = 22.sp,
@@ -74,7 +113,31 @@ fun AddPhoneNoScreen( viewModel: ValidationViewModel = hiltViewModel()){
         },
         content = { padding ->
 
+
+            if (showCodeInput.value){
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    TextField(
+                        value = verificationCode,
+                        onValueChange = {
+                            viewModel.onverificationCodeEntered(it)  },
+                        label = { Text("Verification Code") }
+                    )
+                    Button(onClick = {
+                        viewModel.signInWithPhoneAuthCredential(verificationCode)
+                    }) {
+                        Text("Submit Code")
+                    }
+                }
+            }
+            else{
                 PhoneFieldContent(modifier = Modifier.padding(padding),viewModel)
+            }
 
         }
     )
@@ -83,9 +146,10 @@ fun AddPhoneNoScreen( viewModel: ValidationViewModel = hiltViewModel()){
 @Composable
 fun PhoneFieldContent(modifier: Modifier, viewModel: ValidationViewModel) {
     val phoneNumber = viewModel.phoneNumber
-    Column(modifier = modifier
-        .fillMaxSize(),
-        verticalArrangement =   Arrangement.Center,
+    Column(
+        modifier = modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {
@@ -128,6 +192,16 @@ fun PhoneFieldContent(modifier: Modifier, viewModel: ValidationViewModel) {
                             color = Color(0xFFC7C7CC),
                             )
                     )
+                },
+                isError = viewModel.validationResult==ValidationViewModel.ValidationResult.Invalid ||
+                        viewModel.validationResult==ValidationViewModel.ValidationResult.InvalidCountry,
+                supportingText = {
+                    if (viewModel.validationResult==ValidationViewModel.ValidationResult.Invalid){
+                        Text("invalid No")
+                    }
+                    if (viewModel.validationResult==ValidationViewModel.ValidationResult.InvalidCountry){
+                        Text("invalid Country")
+                    }
                 }
             )
         }
