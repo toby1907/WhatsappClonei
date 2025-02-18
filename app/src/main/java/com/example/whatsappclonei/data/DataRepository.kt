@@ -47,5 +47,17 @@ interface AuthRepository {
    suspend fun getChats(receiverId:String): Flow<List<MessageModel>>
    suspend fun loadPrivateChats(receiverId: String): Flow<List<MessageModel>>
    suspend fun sendRecordingMessage(audioPath:String,receiverId: String): Flow<Boolean>
+    suspend fun sendVerificationCode(
+        phoneNumber: String,
+        onCodeSent: (String) -> Unit,
+        onVerificationFailed: (Exception) -> Unit,
+        onCodeAutoRetrieved: (String) -> Unit
+    )
+    suspend fun signInWithPhoneAuthCredential(
+        verificationId: String,
+        verificationCode: String
+    ): SignInResponse
+
+    fun isUserAuthenticated(): Boolean
 
 }

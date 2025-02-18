@@ -34,7 +34,7 @@ fun rememberAppState(
 @Composable
 fun NavGraph(
     modifier: Modifier = Modifier,
-    startDestination: String = LOGIN_SCREEN,
+    startDestination: String = VERIFY_PHONE_SCREEN,
 ) {
     val appState = rememberAppState()
     NavHost(
@@ -101,7 +101,7 @@ fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState) {
     composable(
         route = VERIFY_PHONE_SCREEN,
     ){
-        AddPhoneNoScreen()
+        AddPhoneNoScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
     }
 
 
