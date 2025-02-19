@@ -18,6 +18,9 @@ import com.example.whatsappclonei.Constants.WELCOME_MESSAGE
 import com.example.whatsappclonei.data.model.Response
 import com.example.whatsappclonei.ui.onboarding.signUp.ProgressBar
 import com.example.whatsappclonei.ui.profile.ProfileViewModel
+import com.example.whatsappclonei.ui.snackbar.SnackbarAction
+import com.example.whatsappclonei.ui.snackbar.SnackbarController
+import com.example.whatsappclonei.ui.snackbar.SnackbarEvent
 import com.example.whatsappclonei.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -147,13 +150,19 @@ fun RevokeAccess(
     val context = LocalContext.current
 
     fun showRevokeAccessMessage() = coroutineScope.launch {
-        val result = scaffoldState.showSnackbar(
-            message = Constants.REVOKE_ACCESS_MESSAGE,
-            actionLabel = Constants.SIGN_OUT
+
+        SnackbarController.sendEvent(
+            event = SnackbarEvent(
+                message = Constants.REVOKE_ACCESS_MESSAGE,
+                action = SnackbarAction(
+                    name =  Constants.SIGN_OUT,
+                    action = {
+                        signOut()
+                    }
+                )
+            )
         )
-        if (result == SnackbarResult.ActionPerformed) {
-            signOut()
-        }
+
     }
 
     when (val revokeAccessResponse = viewModel.revokeAccessResponse) {

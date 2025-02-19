@@ -10,6 +10,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.whatsappclonei.Constants.PROFILE_SCREEN
+import com.example.whatsappclonei.screens.SPLASH_SCREEN
+import com.example.whatsappclonei.screens.VERIFY_PHONE_SCREEN
 import com.example.whatsappclonei.ui.onboarding.signUp.components.ProfileContent
 import com.example.whatsappclonei.ui.onboarding.signUp.components.RevokeAccess
 import com.example.whatsappclonei.ui.onboarding.signUp.components.TopBar
@@ -18,7 +20,9 @@ import com.example.whatsappclonei.ui.theme.WhatsappCloneiTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
+    openAndPopUp: (String,String) -> Unit,
+
 ) {
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -29,6 +33,8 @@ fun ProfileScreen(
                 title = PROFILE_SCREEN,
                 signOut = {
                     viewModel.signOut()
+                    openAndPopUp(VERIFY_PHONE_SCREEN, PROFILE_SCREEN)
+
                 },
                 revokeAccess = {
                     viewModel.revokeAccess()
