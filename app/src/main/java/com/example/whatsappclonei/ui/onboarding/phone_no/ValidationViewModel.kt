@@ -38,7 +38,7 @@ class ValidationViewModel @Inject constructor(
 
     var verificationId by mutableStateOf("")
         private set
-    var isCodeSent by mutableStateOf(false)
+    var codeSentState by mutableStateOf<CodeSentState>(CodeSentState.Idle)
         private set
     var signInResponse by mutableStateOf<Response<Boolean>>(Response.Loading)
         private set
@@ -90,16 +90,17 @@ class ValidationViewModel @Inject constructor(
     }
     // Function to initiate phone number verification
     fun sendVerificationCode() {
+        codeSentState = CodeSentState.Loading
         viewModelScope.launch {
             repository.sendVerificationCode(
                 phoneNumber = "+${selectedCountryCode.countryPhoneCode}$phoneNumber",
                 onCodeSent = { verificationId ->
                     this@ValidationViewModel.verificationId = verificationId
-                    isCodeSent = true
+                    codeSentState = CodeSentState.Sent
                 },
                 onVerificationFailed = { exception ->
                     Log.e(TAG, "onVerificationFailed: ${exception.message}")
-                    isCodeSent = false
+                    codeSentState = CodeSentState.Failed(exception)
                 },
                 onCodeAutoRetrieved = { smsCode ->
                     Log.d(TAG, "onCodeAutoRetrieved: $smsCode")
@@ -120,5 +121,11 @@ class ValidationViewModel @Inject constructor(
         object Invalid : ValidationResult()
         object InvalidCountry : ValidationResult()
         object Loading : ValidationResult()
+    }
+    sealed class CodeSentState {
+        object Idle : CodeSentState()
+        object Loading : CodeSentState()
+        object Sent : CodeSentState()
+        data class Failed(val exception: Exception) : CodeSentState()
     }
 }

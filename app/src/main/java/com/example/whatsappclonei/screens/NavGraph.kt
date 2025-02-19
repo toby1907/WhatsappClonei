@@ -80,7 +80,8 @@ fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState) {
     composable(
         route = PROFILE_SCREEN
     ) {
-        ProfileScreen()
+        ProfileScreen(
+            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
     }
     composable(
         route = MESSAGE_SCREEN

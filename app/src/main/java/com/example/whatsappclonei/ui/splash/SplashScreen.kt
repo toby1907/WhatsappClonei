@@ -32,7 +32,18 @@ fun SplashScreen(
     openAndPopUp: (String,String) -> Unit
 ){
 val isAuthenticated = viewModel.isAuthenticated
-    LaunchedEffect(isAuthenticated) {
+
+    val currentOnTimeout by rememberUpdatedState(newValue = openAndPopUp)
+    LaunchedEffect(openAndPopUp){
+        delay(SplashWaitTime)//Simulates loading things
+
+        if (isAuthenticated){
+            currentOnTimeout(MESSAGE_SCREEN, SPLASH_SCREEN)
+        }
+        else{
+            currentOnTimeout(VERIFY_PHONE_SCREEN, SPLASH_SCREEN)
+        }
+
 
     }
     Box(
@@ -42,19 +53,7 @@ val isAuthenticated = viewModel.isAuthenticated
         contentAlignment = Alignment.Center
 
     ) {
-        val currentOnTimeout by rememberUpdatedState(newValue = openAndPopUp)
-        LaunchedEffect(openAndPopUp){
-            delay(SplashWaitTime)//Simulates loading things
 
-            if (isAuthenticated){
-                currentOnTimeout(MESSAGE_SCREEN, SPLASH_SCREEN)
-            }
-            else{
-                currentOnTimeout(VERIFY_PHONE_SCREEN, SPLASH_SCREEN)
-            }
-
-
-        }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
 

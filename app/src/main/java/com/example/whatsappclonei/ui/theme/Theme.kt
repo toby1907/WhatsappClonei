@@ -10,13 +10,14 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = WhatsAppColor,
+    primary = ColorPrimaryDary,
     secondary = SecondaryColor,
     tertiary = Pink80
 )
@@ -25,6 +26,8 @@ private val LightColorScheme = lightColorScheme(
     primary = WhatsAppColor,
     secondary = SecondaryColor,
     tertiary = Pink40
+
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
