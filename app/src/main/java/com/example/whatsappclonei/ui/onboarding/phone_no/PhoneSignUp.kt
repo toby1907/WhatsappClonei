@@ -66,7 +66,7 @@ fun AddPhoneNoScreen(
     val sendSnackBar = remember {
         mutableStateOf(false)
     }
-    LaunchedEffect(sendSnackBar) {
+    LaunchedEffect(sendSnackBar.value) {
         if (sendSnackBar.value) {
             coroutineScope.launch {
                 SnackbarController.sendEvent(
@@ -141,12 +141,12 @@ fun AddPhoneNoScreen(
                                 CircularProgressIndicator(
                                     color = MaterialTheme.colorScheme.onBackground,
                                     modifier = Modifier.padding(end = 8.dp)
-                                        .size(48.dp)
+                                        .size(32.dp)
                                 )
                             }
 
                             is ValidationViewModel.CodeSentState.Sent -> {
-                                Text(
+                                /*Text(
                                     text = "Verify",
                                     style = TextStyle(
                                         fontSize = 17.sp,
@@ -157,7 +157,7 @@ fun AddPhoneNoScreen(
 
                                         textAlign = TextAlign.Right,
                                     )
-                                )
+                                )*/
                             }
 
                             is ValidationViewModel.CodeSentState.Failed -> {
