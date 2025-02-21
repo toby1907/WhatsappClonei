@@ -33,6 +33,9 @@ fun SignUp(
             }
         }
 
+        Response.None -> {
+
+        }
     }
 }
 

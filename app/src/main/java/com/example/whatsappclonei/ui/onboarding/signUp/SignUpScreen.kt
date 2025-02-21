@@ -95,6 +95,11 @@ fun SendEmailVerification(
                 print(e)
             }
         }
+
+        Response.None -> {
+
+
+        }
     }
 }
 

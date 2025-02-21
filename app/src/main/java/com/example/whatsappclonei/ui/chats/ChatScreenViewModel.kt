@@ -61,7 +61,11 @@ class ChatScreenViewModel @Inject constructor(
                     // handle failure state with exception
                 //    postMessage(exception.message.toString())
                 }
-            }
+
+                    Response.None -> {
+
+                    }
+                }
 
         }
     }

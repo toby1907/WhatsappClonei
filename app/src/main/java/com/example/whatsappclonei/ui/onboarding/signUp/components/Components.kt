@@ -44,6 +44,10 @@ fun ReloadUser(
                 print(e)
             }
         }
+
+        Response.None -> {
+
+        }
     }
 
 }
@@ -182,6 +186,10 @@ fun RevokeAccess(
                     showRevokeAccessMessage()
                 }
             }
+        }
+
+        Response.None -> {
+
         }
     }}
 @Composable

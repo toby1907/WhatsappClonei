@@ -15,6 +15,7 @@ const val TASKS_SCREEN = "TasksScreen"
 const val EDIT_TASK_SCREEN = "EditTaskScreen"
 const val PROFILE_SCREEN = "ProfileScreen"
 const val VERIFY_PHONE_SCREEN = "VerifyPhoneScreen"
+const val STATUS_SCREEN = "Status Screen"
 
 const val CHAT_ID = "chatId"
 const val CHAT_DEFAULT_ID = "-1"
@@ -29,4 +30,6 @@ sealed class Screen(val route: String) {
     object VerifyEmailScreen: Screen(VERIFY_EMAIL_SCREEN)
     object ProfileScreen: Screen(PROFILE_SCREEN)
     object MessagesScreen: Screen(MESSAGES_SCREEN)
+    object StatusScreen: Screen(STATUS_SCREEN)
+
 }

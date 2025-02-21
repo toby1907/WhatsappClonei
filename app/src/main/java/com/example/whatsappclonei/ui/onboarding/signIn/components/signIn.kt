@@ -26,5 +26,9 @@ showSnackbar.invoke()
                 showErrorMessage(e.message)
             }
         }
+
+        Response.None -> {
+
+        }
     }
 }
