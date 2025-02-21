@@ -75,7 +75,8 @@ data class MessageItem(
 fun MessageScreen(
     viewModel: ChatScreenViewModel = hiltViewModel(),
     navigateProfile: () -> Unit,
-    openChat: (String) -> Unit
+    openChat: (String) -> Unit,
+    navigateStatus: () -> Unit
 ) {
 
     val accounts by viewModel.accounts.collectAsState()
@@ -158,7 +159,9 @@ fun MessageScreen(
                         verticalAlignment = CenterVertically
 
                     ) {
-                        IconButton(onClick = { /* doSomething() */ }) {
+                        IconButton(onClick = {
+                            navigateStatus()
+                        }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.status_icon),
                                 contentDescription = "Localized description"

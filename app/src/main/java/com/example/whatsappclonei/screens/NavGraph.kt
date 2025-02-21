@@ -19,6 +19,7 @@ import com.example.whatsappclonei.ui.private_chat.ChatScreen
 import com.example.whatsappclonei.ui.profile.ProfileScreen
 import com.example.whatsappclonei.ui.profile.VerifyEmailScreen
 import com.example.whatsappclonei.ui.splash.SplashScreen
+import com.example.whatsappclonei.ui.status.StatusScreen
 
 
 @Composable
@@ -86,8 +87,14 @@ fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState) {
     composable(
         route = MESSAGE_SCREEN
     ) {
-        MessageScreen(navigateProfile = { appState.navigate(PROFILE_SCREEN) },
-            openChat = {route ->appState.navigate(route)})
+        MessageScreen(
+            navigateProfile = { appState.navigate(PROFILE_SCREEN) },
+            openChat = { route -> appState.navigate(route) },
+            navigateStatus = {
+                appState.navigate(STATUS_SCREEN)
+            }
+        )
+
     }
 
     composable(
@@ -110,6 +117,16 @@ fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState) {
     ){
         SplashScreen(
             openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) },
+        )
+    }
+    composable(
+        route = STATUS_SCREEN,
+    ){
+        StatusScreen(
+            onStatusClick = {},
+            onMyStatusClick = {},
+            onNewStatusClick = {},
+            isTesting = true
         )
     }
 
