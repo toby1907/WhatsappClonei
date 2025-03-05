@@ -22,8 +22,8 @@ import com.example.whatsappclonei.screens.STATUS_SCREEN
 @Composable
 fun StatusListScreen(
     openAndPopUp: (String,String) -> Unit
-) {
-
+)
+{
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()

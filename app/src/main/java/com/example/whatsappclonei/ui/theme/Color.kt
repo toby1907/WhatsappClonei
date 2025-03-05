@@ -51,3 +51,5 @@ val Blue_Dark = Color(0xFF5AB7CB)
 val SecondaryGray_20 = Color(0xFF576977)
 val RED_100 = Color(0xFFF00236)
 val White_100 = Color(0xFFF8F8F8)
+
+

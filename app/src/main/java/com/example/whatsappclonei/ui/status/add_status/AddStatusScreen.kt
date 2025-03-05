@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.whatsappclonei.R
+import com.example.whatsappclonei.data.model.Status
 import com.example.whatsappclonei.ui.theme.PrimaryGreen
 import com.example.whatsappclonei.ui.theme.White
 
@@ -57,6 +58,10 @@ fun CreateStatusScreen(
             .background(MaterialTheme.colorScheme.background)
     ) {
         // Top Bar
+        // Status Text Input
+        var text by remember { mutableStateOf(TextFieldValue("")) }
+        var backgroundColor by remember {
+            mutableStateOf(Status.noteColors[0]) }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -78,13 +83,15 @@ fun CreateStatusScreen(
                         style = TextStyle(
                             fontSize = 22.5.sp,
                             fontWeight = FontWeight(400),
-                            color = Color(0xFF000000),
+                            color = Color(0xFFFFFFFF),
 
                             textAlign = TextAlign.Center,
                         )
                     )
                 }
-                IconButton(onClick = onPaletteClick) {
+                IconButton(onClick = { onPaletteClick()
+                    backgroundColor = Status.noteColors.random()
+                }) {
                     Icon(
                         painter = painterResource(R.drawable.palete_icon),
                         contentDescription = "Palette",
@@ -94,13 +101,13 @@ fun CreateStatusScreen(
             }
         }
 
-        // Status Text Input
-        var text by remember { mutableStateOf(TextFieldValue("")) }
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .padding(16.dp),
+                .padding(16.dp)
+                .background(backgroundColor),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -125,7 +132,7 @@ fun CreateStatusScreen(
                             fontWeight = FontWeight.Bold
                         )
 
-                        Text(
+                        /*Text(
                             text = "Type a status",
                             style = TextStyle(
                                 fontSize = 38.sp,
@@ -135,7 +142,7 @@ fun CreateStatusScreen(
 
                                 textAlign = TextAlign.Center,
                             )
-                        )
+                        )*/
                     }
                     innerTextField()
                 }
@@ -193,6 +200,13 @@ fun CreateStatusScreen(
                 ) {
                     Text(
                         text = "T",
+                        style = TextStyle(
+                            fontSize = 22.5.sp,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF000000),
+
+                            textAlign = TextAlign.Center,
+                        )
                     )
                 }
             }
