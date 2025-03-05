@@ -33,12 +33,14 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.whatsappclonei.R
+import com.example.whatsappclonei.data.model.Status
 import com.example.whatsappclonei.ui.theme.PrimaryGreen
 import com.example.whatsappclonei.ui.theme.White
 
@@ -57,6 +59,37 @@ fun CreateStatusScreen(
             .background(MaterialTheme.colorScheme.background)
     ) {
         // Top Bar
+        // Status Text Input
+        var text by remember { mutableStateOf(TextFieldValue("")) }
+        var backgroundColor by remember {
+            mutableStateOf(Status.noteColors[0]) }
+        var textStyleState by remember { mutableStateOf(TextStyleState.Neutral) }
+        val textStyle = when (textStyleState) {
+            TextStyleState.Neutral -> TextStyle(
+                fontSize = 22.5.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+            TextStyleState.Italic -> TextStyle(
+                fontSize = 22.5.sp,
+                fontWeight = FontWeight.Normal,
+                fontStyle = FontStyle.Italic,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+            TextStyleState.Bold -> TextStyle(
+                fontSize = 22.5.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+        }
+
+
+
+
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -72,19 +105,22 @@ fun CreateStatusScreen(
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = onTextClick) {
+                IconButton(onClick = {
+                    onTextClick()
+                    textStyleState = when (textStyleState) {
+                        TextStyleState.Neutral -> TextStyleState.Italic
+                        TextStyleState.Italic -> TextStyleState.Bold
+                        TextStyleState.Bold -> TextStyleState.Neutral
+                    }
+                }) {
                     Text(
                         text = "T",
-                        style = TextStyle(
-                            fontSize = 22.5.sp,
-                            fontWeight = FontWeight(400),
-                            color = Color(0xFF000000),
-
-                            textAlign = TextAlign.Center,
-                        )
+                        style = textStyle
                     )
                 }
-                IconButton(onClick = onPaletteClick) {
+                IconButton(onClick = { onPaletteClick()
+                    backgroundColor = Status.noteColors.random()
+                }) {
                     Icon(
                         painter = painterResource(R.drawable.palete_icon),
                         contentDescription = "Palette",
@@ -94,25 +130,20 @@ fun CreateStatusScreen(
             }
         }
 
-        // Status Text Input
-        var text by remember { mutableStateOf(TextFieldValue("")) }
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .padding(16.dp),
+                .padding(16.dp)
+                .background(backgroundColor),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             BasicTextField(
                 value = text,
                 onValueChange = { text = it },
-                textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 24.sp,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold
-                ),
+                textStyle = textStyle,
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
                 modifier = Modifier.fillMaxWidth(),
                 decorationBox = { innerTextField ->
@@ -125,7 +156,7 @@ fun CreateStatusScreen(
                             fontWeight = FontWeight.Bold
                         )
 
-                        Text(
+                        /*Text(
                             text = "Type a status",
                             style = TextStyle(
                                 fontSize = 38.sp,
@@ -135,7 +166,7 @@ fun CreateStatusScreen(
 
                                 textAlign = TextAlign.Center,
                             )
-                        )
+                        )*/
                     }
                     innerTextField()
                 }
@@ -193,6 +224,13 @@ fun CreateStatusScreen(
                 ) {
                     Text(
                         text = "T",
+                        style = TextStyle(
+                            fontSize = 22.5.sp,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF000000),
+
+                            textAlign = TextAlign.Center,
+                        )
                     )
                 }
             }
