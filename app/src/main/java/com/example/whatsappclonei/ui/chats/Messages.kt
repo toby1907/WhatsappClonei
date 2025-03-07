@@ -94,28 +94,8 @@ fun MessageScreen(
     }
 
 
-    /* val messageItems = listOf(
-         MessageItem(
-             userIcon = R.drawable.avatar,
-             userName = "John",
-             lastMessage = "Hello!",
-             lastMessageTime = "10:00 AM"
-         ),
-         MessageItem(
-             userIcon = R.drawable.avatar,
-             userName = "Jane",
-             lastMessage = "Hi!",
-             lastMessageTime = "11:00 AM"
-         ),
-         MessageItem(
-             userIcon = R.drawable.avatar,
-             userName = "Bob",
-             lastMessage = "Hey!",
-             lastMessageTime = "12:00 PM"
-         )
-     )*/
     Scaffold(
-        topBar = {
+     /*   topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Messages") },
                 navigationIcon = {
@@ -135,7 +115,7 @@ fun MessageScreen(
                     )
                 )
             )
-        },
+        },*/
 
         content = { innerPadding ->
             LazyColumn(
@@ -148,51 +128,6 @@ fun MessageScreen(
 
             }
         },
-        bottomBar = {
-            BottomAppBar(
-                actions = {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(CenterVertically),
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        verticalAlignment = CenterVertically
-
-                    ) {
-                        IconButton(onClick = {
-                            navigateStatus()
-                        }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.status_icon),
-                                contentDescription = "Localized description"
-                            )
-                        }
-                        IconButton(onClick = { /* doSomething() */ }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.call_icon),
-                                contentDescription = "Localized description",
-                            )
-                        }
-                        IconButton(onClick = { /* doSomething() */ }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.chats_icon),
-                                contentDescription = "Localized description",
-                            )
-                        }
-                        IconButton(onClick = { /* doSomething() */ }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.settings_icon),
-                                contentDescription = "Localized description",
-                            )
-                        }
-                    }
-                },
-                containerColor = Color(0xFFFCFCFC),
-                contentColor = Color(0xffC4C4C4),
-
-
-                )
-        }
     )
 
 

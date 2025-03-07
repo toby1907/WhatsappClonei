@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.whatsappclonei.WhatsappCloneiAppState
 import com.example.whatsappclonei.constants.VERIFY_EMAIL_SCREEN
+import com.example.whatsappclonei.ui.chats.HomeScreen
 import com.example.whatsappclonei.ui.chats.MessageScreen
 import com.example.whatsappclonei.ui.onboarding.phone_no.AddPhoneNoScreen
 import com.example.whatsappclonei.ui.onboarding.signIn.SignInFullScreen
@@ -19,10 +20,9 @@ import com.example.whatsappclonei.ui.private_chat.ChatScreen
 import com.example.whatsappclonei.ui.profile.ProfileScreen
 import com.example.whatsappclonei.ui.profile.VerifyEmailScreen
 import com.example.whatsappclonei.ui.splash.SplashScreen
-import com.example.whatsappclonei.ui.status.StatusScreen
+import com.example.whatsappclonei.ui.status.UserStatusesScreen
 import com.example.whatsappclonei.ui.status.add_status.CreateStatusScreen
 import com.example.whatsappclonei.ui.status.screens.StatusListScreen
-import com.example.whatsappclonei.ui.status.screens.WhatsappHomeScreen
 
 
 @Composable
@@ -90,12 +90,8 @@ fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState) {
     composable(
         route = MESSAGE_SCREEN
     ) {
-        MessageScreen(
-            navigateProfile = { appState.navigate(PROFILE_SCREEN) },
-            openChat = { route -> appState.navigate(route) },
-            navigateStatus = {
-                appState.navigate(STATUS_SCREEN)
-            }
+        HomeScreen(
+            appState = appState
         )
 
     }
@@ -142,8 +138,14 @@ fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState) {
            onPaletteClick ={},
            onVideoClick = {},
            onPhotoClick = {},
-           onMicClick = {}
+           onMicClick = {},
+           navController = appState.navController
        )
+    }
+
+    composable(route = STATUSESPREVIEW){
+
+        UserStatusesScreen()
     }
 
 

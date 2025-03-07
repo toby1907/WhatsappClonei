@@ -17,6 +17,7 @@ import com.example.whatsappclonei.ui.status.domain.StatusUpdateCategory
 import com.example.whatsappclonei.R
 import com.example.whatsappclonei.components.ext.fieldModifier
 import com.example.whatsappclonei.screens.CREATE_STATUS_SCREEN
+import com.example.whatsappclonei.screens.STATUSESPREVIEW
 import com.example.whatsappclonei.screens.STATUS_SCREEN
 
 @Composable
@@ -61,7 +62,7 @@ fun StatusListScreen(
                 subHeader = status.timeStamp,
                 modifier = Modifier.clickable {
                     openAndPopUp(
-                        CREATE_STATUS_SCREEN,
+                        STATUSESPREVIEW,
                         STATUS_SCREEN
                     )
                 }

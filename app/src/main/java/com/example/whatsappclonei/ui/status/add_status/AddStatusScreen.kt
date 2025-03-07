@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.whatsappclonei.R
 import com.example.whatsappclonei.data.model.Status
 import com.example.whatsappclonei.ui.theme.PrimaryGreen
@@ -52,14 +53,14 @@ fun CreateStatusScreen(
     onVideoClick: () -> Unit,
     onPhotoClick: () -> Unit,
     onMicClick: () -> Unit,
+    navController: NavController
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Top Bar
-        // Status Text Input
+
         var text by remember { mutableStateOf(TextFieldValue("")) }
         var backgroundColor by remember {
             mutableStateOf(Status.noteColors[0]) }
@@ -97,9 +98,12 @@ fun CreateStatusScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onCancelClick) {
+            IconButton(onClick = {
+                onCancelClick()
+                navController.navigateUp()
+            }) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    painter = painterResource(R.drawable.cancel_icon),
                     contentDescription = "Cancel",
                     tint = MaterialTheme.colorScheme.onBackground
                 )
