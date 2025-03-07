@@ -17,6 +17,7 @@ const val PROFILE_SCREEN = "ProfileScreen"
 const val VERIFY_PHONE_SCREEN = "VerifyPhoneScreen"
 const val STATUS_SCREEN = "Status Screen"
 const val CREATE_STATUS_SCREEN = "Create Status Screen"
+const val STATUSESPREVIEW = "statuses preview screen"
 
 const val CHAT_ID = "chatId"
 const val CHAT_DEFAULT_ID = "-1"

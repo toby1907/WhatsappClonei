@@ -83,4 +83,7 @@
     <string name="create_call_link">Create call link</string>
     <string name="share_link_for_call">Share a link for you WhatsApp call</string>
     <string name="type_a_status">Type a status</string>
+    <string name="messages">Messages\n</string>
+    <string name="status">Status</string>
+    <string name="calls">Calls</string>
 </resources>

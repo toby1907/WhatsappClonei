@@ -24,23 +24,19 @@ import com.example.whatsappclonei.ui.theme.White
 @Composable
 fun AppBar(
     @DimenRes height: Int = R.dimen.app_bar_height,
-) {
+    title: @Composable () -> Unit,
+
+    ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(dimensionResource(height))
             .background(MaterialTheme.colorScheme.primary)
             .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+
     ) {
-        Text(
-            text = stringResource(id = R.string.whatsapp_title),
-            style = TextStyle(
-                fontSize = 22.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = if (isSystemInDarkTheme()) PrimaryGray_A101 else White
-            )
-        )
+       title()
 
         Spacer(modifier = Modifier.weight(1f))
         ActionIcon(id = R.drawable.ic_camera_outline)
