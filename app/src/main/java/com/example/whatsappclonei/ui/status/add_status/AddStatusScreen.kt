@@ -1,4 +1,5 @@
 package com.example.whatsappclonei.ui.status.add_status
+import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -6,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -39,9 +45,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.example.whatsappclonei.R
 import com.example.whatsappclonei.data.model.Status
+import com.example.whatsappclonei.ui.status.util.rememberDrawController
 import com.example.whatsappclonei.ui.theme.PrimaryGreen
 import com.example.whatsappclonei.ui.theme.White
 
@@ -53,14 +61,16 @@ fun CreateStatusScreen(
     onVideoClick: () -> Unit,
     onPhotoClick: () -> Unit,
     onMicClick: () -> Unit,
-    navController: NavController
+    navController: NavController,
+    saveImage: (Bitmap) -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-
+        val context = LocalContext.current
+        val drawController = rememberDrawController()
         var text by remember { mutableStateOf(TextFieldValue("")) }
         var backgroundColor by remember {
             mutableStateOf(Status.noteColors[0]) }
@@ -135,47 +145,73 @@ fun CreateStatusScreen(
         }
 
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(16.dp)
-                .background(backgroundColor),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            BasicTextField(
-                value = text,
-                onValueChange = { text = it },
-                textStyle = textStyle,
-                cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
-                modifier = Modifier.fillMaxWidth(),
-                decorationBox = { innerTextField ->
-                    if (text.text.isEmpty()) {
-                        Text(
-                            text = stringResource(id = R.string.type_a_status),
-                            color = Color.Gray,
-                            fontSize = 24.sp,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold
-                        )
+      AndroidView(
+          factory = {
+              ComposeView(context).apply {
+                  setContent {
+                      LaunchedEffect(drawController) {
+                          drawController.trackBitmaps(
+                              this@apply, this,
+                              onCaptured = { imageBitmap, _ ->
+                                  imageBitmap?.let { bitmap ->
+                                      saveImage(bitmap.asAndroidBitmap())
 
-                        /*Text(
-                            text = "Type a status",
-                            style = TextStyle(
-                                fontSize = 38.sp,
-                                lineHeight = 46.sp,
-                                fontWeight = FontWeight(500),
-                                color = Color(0x66FFFFFF),
+                                  }
+                              }
+                          )
 
-                                textAlign = TextAlign.Center,
-                            )
-                        )*/
-                    }
-                    innerTextField()
-                }
-            )
-        }
+
+                      }
+
+                      Column(
+                          modifier = Modifier
+                              .fillMaxHeight(0.8f)
+                              .fillMaxWidth()
+                              .weight(1f)
+                              .padding(16.dp)
+                              .background(backgroundColor),
+                          horizontalAlignment = Alignment.CenterHorizontally,
+                          verticalArrangement = Arrangement.Center
+                      ) {
+                          BasicTextField(
+                              value = text,
+                              onValueChange = { text = it },
+                              textStyle = textStyle,
+                              cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
+                              modifier = Modifier.fillMaxWidth(),
+                              decorationBox = { innerTextField ->
+                                  if (text.text.isEmpty()) {
+                                      Text(
+                                          text = stringResource(id = R.string.type_a_status),
+                                          color = Color.Gray,
+                                          fontSize = 24.sp,
+                                          textAlign = TextAlign.Center,
+                                          fontWeight = FontWeight.Bold
+                                      )
+
+                                      /*Text(
+                                          text = "Type a status",
+                                          style = TextStyle(
+                                              fontSize = 38.sp,
+                                              lineHeight = 46.sp,
+                                              fontWeight = FontWeight(500),
+                                              color = Color(0x66FFFFFF),
+
+                                              textAlign = TextAlign.Center,
+                                          )
+                                      )*/
+                                  }
+                                  innerTextField()
+                              }
+                          )
+                      }
+                  }
+
+
+              }}
+      )
+
+
 
         // Bottom Bar
         Row(
@@ -243,7 +279,11 @@ fun CreateStatusScreen(
                     .size(40.dp)
                     .clip(CircleShape)
                     .background(PrimaryGreen)
-                    .clickable(onClick = onMicClick),
+                    .clickable(onClick = {
+                        drawController.saveBitmap()
+                        onMicClick()
+
+                    }),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(

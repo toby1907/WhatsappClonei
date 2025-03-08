@@ -1,5 +1,6 @@
 package com.example.whatsappclonei.screens
 
+import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -40,19 +41,23 @@ fun rememberAppState(
 fun NavGraph(
     modifier: Modifier = Modifier,
     startDestination: String = SPLASH_SCREEN,
+    saveImage: (Bitmap) -> Unit,
 ) {
     val appState = rememberAppState()
     NavHost(
         modifier = modifier,
         navController = appState.navController,
         startDestination = startDestination,
+
     ) {
 
-        WhatsappCloneNavGraph(appState = appState)
+        WhatsappCloneNavGraph(appState = appState,saveImage = saveImage)
     }
 }
 
-fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState) {
+fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState,
+                                          saveImage: (Bitmap) -> Unit,
+                                          ) {
     composable(LOGIN_SCREEN) {
         SignInFullScreen(
             navigateToSignUpScreen = { appState.navigate(SIGN_UP_SCREEN) },
@@ -139,7 +144,8 @@ fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState) {
            onVideoClick = {},
            onPhotoClick = {},
            onMicClick = {},
-           navController = appState.navController
+           navController = appState.navController,
+           saveImage = saveImage
        )
     }
 
