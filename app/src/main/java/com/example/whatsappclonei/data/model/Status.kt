@@ -5,13 +5,17 @@ import com.example.whatsappclonei.ui.theme.OffWhite_Light
 import com.example.whatsappclonei.ui.theme.PrimaryGray_A101
 import com.example.whatsappclonei.ui.theme.PrimaryGreen_A101
 import com.example.whatsappclonei.ui.theme.PrimaryGreen_A102
+import com.google.firebase.Timestamp
+
 
 data class StatusItem(
     val statusId: String = "",
-    val type: String = "", // "text", "image", "video"
-    val content: String = "",
-    val timestamp: com.google.firebase.Timestamp = com.google.firebase.Timestamp.now(),
-    val duration: Long = 0L,
+    val type: String = "text", // "text", "image", "video"
+    val text: String? = null,
+    val imageUrl: String? = null,
+    val videoUrl: String? = null,
+    val timestamp: Timestamp = Timestamp.now(),
+    val duration: Long = 0L, // Duration in milliseconds (for videos)
     val viewers: List<String> = emptyList()
 )
 
@@ -20,8 +24,8 @@ data class Status(
     val userName: String = "",
     val userPhotoUrl: String = "",
     val statusItems: List<StatusItem> = emptyList(),
-    val createdAt: com.google.firebase.Timestamp = com.google.firebase.Timestamp.now(),
-    val expiresAt: com.google.firebase.Timestamp = com.google.firebase.Timestamp.now()
+    val createdAt: Timestamp = Timestamp.now(),
+    val expiresAt: Timestamp = Timestamp.now()
 ){
     companion object {
         val noteColors = listOf(OffWhite_Light, OffWhite_Dark, PrimaryGreen_A101, PrimaryGreen_A102, PrimaryGray_A101)
