@@ -22,6 +22,7 @@ import com.example.whatsappclonei.ui.profile.ProfileScreen
 import com.example.whatsappclonei.ui.profile.VerifyEmailScreen
 import com.example.whatsappclonei.ui.splash.SplashScreen
 import com.example.whatsappclonei.ui.status.UserStatusesScreen
+import com.example.whatsappclonei.ui.status.add_status.AddStatusScreen
 import com.example.whatsappclonei.ui.status.add_status.CreateStatusScreen
 import com.example.whatsappclonei.ui.status.screens.StatusListScreen
 
@@ -137,16 +138,19 @@ fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState,
     composable(
         route = CREATE_STATUS_SCREEN,
     ){
-       CreateStatusScreen(
+   /*    CreateStatusScreen(
            onCancelClick = {},
            onTextClick = {},
            onPaletteClick ={},
            onVideoClick = {},
-           onPhotoClick = {},
            onMicClick = {},
            navController = appState.navController,
            saveImage = saveImage
-       )
+       )*/
+
+        AddStatusScreen(
+            navController = appState.navController,
+        )
     }
 
     composable(route = STATUSESPREVIEW){

@@ -46,6 +46,9 @@ class AddStatusViewModel @Inject constructor(
             addStatusResponse.value = Response.Failure(e)
         }
     }
+    fun resetAddStatusResponse() {
+        addStatusResponse.value = Response.Success(false)
+    }
 
     fun uploadMedia(uri: Uri, type: String) {
         viewModelScope.launch {
