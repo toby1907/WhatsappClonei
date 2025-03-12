@@ -23,7 +23,7 @@ object DummyData {
                     StatusItem(
                         statusId = UUID.randomUUID().toString(),
                         type = "text",
-                        content = "Hello, this is Alice's first status!",
+                      //  content = "Hello, this is Alice's first status!",
                         timestamp = oneHourAgo,
                         duration = 10,
                         viewers = listOf("user2", "user3")
@@ -31,7 +31,7 @@ object DummyData {
                     StatusItem(
                         statusId = UUID.randomUUID().toString(),
                         type = "image",
-                        content = "https://via.placeholder.com/300?text=Image1",
+                      //  content = "https://via.placeholder.com/300?text=Image1",
                         timestamp = twoHoursAgo,
                         duration = 5,
                         viewers = listOf("user2")
@@ -48,7 +48,7 @@ object DummyData {
                     StatusItem(
                         statusId = UUID.randomUUID().toString(),
                         type = "video",
-                        content = "https://via.placeholder.com/300?text=Video1",
+                    //    content = "https://via.placeholder.com/300?text=Video1",
                         timestamp = threeHoursAgo,
                         duration = 15,
                         viewers = listOf("user1", "user3")
@@ -56,7 +56,7 @@ object DummyData {
                     StatusItem(
                         statusId = UUID.randomUUID().toString(),
                         type = "text",
-                        content = "Bob's second status!",
+                    //    content = "Bob's second status!",
                         timestamp = fourHoursAgo,
                         duration = 10,
                         viewers = listOf("user1")
@@ -73,7 +73,7 @@ object DummyData {
                     StatusItem(
                         statusId = UUID.randomUUID().toString(),
                         type = "image",
-                        content = "https://via.placeholder.com/300?text=Image2",
+                     //   content = "https://via.placeholder.com/300?text=Image2",
                         timestamp = now,
                         duration = 5,
                         viewers = emptyList()

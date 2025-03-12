@@ -16,6 +16,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import javax.inject.Singleton
 
 
 @Module
@@ -31,12 +32,24 @@ class AppModule {
     }
 @Provides
 fun provideAuthRepository(): AuthRepository = AuthRepositoryImpl(auth = Firebase.auth, firestore =Firebase.firestore, fireStorage = FirebaseStorage.getInstance())
+@Provides
+fun provideStatusRepositoryImpl(): StatusRepositoryImpl = StatusRepositoryImpl(firestore = Firebase.firestore, auth = Firebase.auth)
 
     @Provides
     fun provideStatusRepository(): StatusRepository = StatusRepositoryImpl(
         firestore = Firebase.firestore,
         auth = Firebase.auth
     )
+    @Provides
+    @Singleton
+    fun provideFirebaseFirestore(): FirebaseFirestore {
+        return FirebaseFirestore.getInstance()
+    }
+    @Provides
+    @Singleton
+    fun provideFirebaseStorage(): FirebaseStorage {
+        return FirebaseStorage.getInstance()
+    }
     @Provides
     fun provideJsonParser(context: Context): JsonParser {
         return JsonParser(context)

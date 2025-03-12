@@ -24,9 +24,15 @@ import androidx.core.app.ActivityCompat
 import com.example.whatsappclonei.screens.NavGraph
 import com.example.whatsappclonei.ui.snackbar.ObserveAsEvents
 import com.example.whatsappclonei.ui.snackbar.SnackbarController
+import com.example.whatsappclonei.ui.status.util.activityChooser
+import com.example.whatsappclonei.ui.status.util.checkAndAskPermission
+import com.example.whatsappclonei.ui.status.util.saveImage
 import com.example.whatsappclonei.ui.theme.WhatsappCloneiTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 private const val LOG_TAG = "AudioRecordTest"
@@ -61,6 +67,7 @@ class MainActivity : ComponentActivity() {
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION)
         setContent {
+
             WhatsappCloneiTheme {
                 val snackbarHostState = remember {
                     SnackbarHostState()
@@ -94,9 +101,21 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
 
-                    NavGraph(modifier = Modifier.padding(innerPadding))
+                    NavGraph(modifier = Modifier.padding(innerPadding),
+                        saveImage = {
+                            checkAndAskPermission {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    val uri = saveImage(it)
+                                    withContext(Dispatchers.Main) {
+                                        startActivity(activityChooser(uri))
+                                    }
+                                }
+                            }
+                        },
+                        )
                 }
             }
+
         }
     }
 }

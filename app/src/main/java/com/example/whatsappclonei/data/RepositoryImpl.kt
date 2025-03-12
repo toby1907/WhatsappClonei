@@ -3,6 +3,7 @@ package com.example.whatsappclonei.data
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.geometry.isEmpty
 import com.example.whatsappclonei.Constants.TAG
 import com.example.whatsappclonei.components.ext.idFromParameter
 import com.example.whatsappclonei.data.model.MessageModel
@@ -428,7 +429,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     // Function to sign in with the verification code
-    override suspend fun signInWithPhoneAuthCredential(
+   /* override suspend fun signInWithPhoneAuthCredential(
         verificationId: String,
         verificationCode: String
     ): SignInResponse = suspendCoroutine { continuation ->
@@ -439,6 +440,56 @@ class AuthRepositoryImpl @Inject constructor(
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithPhoneAuthCredential:success")
                     continuation.resume(Response.Success(true))
+                } else {
+                    // Sign in failed, display a message and update the UI
+                    Log.w(TAG, "signInWithPhoneAuthCredential:failure", task.exception)
+                    continuation.resume(Response.Failure(task.exception!!))
+                }
+            }
+    }*/
+    override suspend fun signInWithPhoneAuthCredential(
+        verificationId: String,
+        verificationCode: String
+    ): SignInResponse = suspendCoroutine { continuation ->
+        val credential = PhoneAuthProvider.getCredential(verificationId, verificationCode)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Check if the user exists in Firestore
+                    val userId = auth.currentUser?.uid
+                    if (userId != null) {
+                        firestore.collection("Users").whereEqualTo("userId", userId).get()
+                            .addOnCompleteListener { queryTask ->
+                                if (queryTask.isSuccessful) {
+                                    if (queryTask.result.isEmpty) {
+                                        // User doesn't exist, create a new user document
+                                        val phoneNumber = auth.currentUser?.phoneNumber
+                                        val user = hashMapOf(
+                                            "username" to phoneNumber, // Use phone number as username
+                                            "userId" to userId,
+                                            "phoneNumber" to phoneNumber
+                                        )
+                                        firestore.collection("Users").add(user)
+                                            .addOnCompleteListener { addUserTask ->
+                                                if (addUserTask.isSuccessful) {
+                                                    Log.d(TAG, "New user created successfully!")
+                                                    continuation.resume(Response.Success(true))
+                                                } else {
+                                                    Log.w(TAG, "Error creating new user", addUserTask.exception)
+                                                    continuation.resume(Response.Failure(addUserTask.exception!!))
+                                                }
+                                            }
+                                    } else {
+                                        // User exists, proceed with sign-in
+                                        Log.d(TAG, "User already exists!")
+                                        continuation.resume(Response.Success(true))
+                                    }
+                                } else {
+                                    Log.w(TAG, "Error checking user existence", queryTask.exception)
+                                    continuation.resume(Response.Failure(queryTask.exception!!))
+                                }
+                            }
+                    }
                 } else {
                     // Sign in failed, display a message and update the UI
                     Log.w(TAG, "signInWithPhoneAuthCredential:failure", task.exception)

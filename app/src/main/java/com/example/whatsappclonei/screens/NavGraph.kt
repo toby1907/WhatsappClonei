@@ -1,10 +1,13 @@
 package com.example.whatsappclonei.screens
 
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,7 +24,9 @@ import com.example.whatsappclonei.ui.profile.ProfileScreen
 import com.example.whatsappclonei.ui.profile.VerifyEmailScreen
 import com.example.whatsappclonei.ui.splash.SplashScreen
 import com.example.whatsappclonei.ui.status.UserStatusesScreen
+import com.example.whatsappclonei.ui.status.add_status.AddStatusScreen
 import com.example.whatsappclonei.ui.status.add_status.CreateStatusScreen
+import com.example.whatsappclonei.ui.status.preview.ImagePreviewScreen
 import com.example.whatsappclonei.ui.status.screens.StatusListScreen
 
 
@@ -40,19 +45,23 @@ fun rememberAppState(
 fun NavGraph(
     modifier: Modifier = Modifier,
     startDestination: String = SPLASH_SCREEN,
+    saveImage: (Bitmap) -> Unit,
 ) {
     val appState = rememberAppState()
     NavHost(
         modifier = modifier,
         navController = appState.navController,
         startDestination = startDestination,
+
     ) {
 
-        WhatsappCloneNavGraph(appState = appState)
+        WhatsappCloneNavGraph(appState = appState,saveImage = saveImage)
     }
 }
 
-fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState) {
+fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState,
+                                          saveImage: (Bitmap) -> Unit,
+                                          ) {
     composable(LOGIN_SCREEN) {
         SignInFullScreen(
             navigateToSignUpScreen = { appState.navigate(SIGN_UP_SCREEN) },
@@ -132,20 +141,37 @@ fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState) {
     composable(
         route = CREATE_STATUS_SCREEN,
     ){
-       CreateStatusScreen(
+   /*    CreateStatusScreen(
            onCancelClick = {},
            onTextClick = {},
            onPaletteClick ={},
            onVideoClick = {},
-           onPhotoClick = {},
            onMicClick = {},
-           navController = appState.navController
-       )
+           navController = appState.navController,
+           saveImage = saveImage
+       )*/
+
+        AddStatusScreen(
+            navController = appState.navController,
+        )
     }
 
     composable(route = STATUSESPREVIEW){
 
         UserStatusesScreen()
+    }
+    composable(route = "preview"+"?uri={uri}",
+        arguments = listOf(
+            navArgument("uri"){
+                type = NavType.StringType
+                defaultValue = ""
+            }
+        )
+        ){
+        ImagePreviewScreen(
+            navController = appState.navController,
+            imageUri = Uri.parse(it.arguments?.getString("uri"))
+        )
     }
 
 

@@ -24,8 +24,13 @@ class StatusRepositoryImpl @Inject constructor(
     override suspend fun createStatus(status: Status): Response<Boolean> {
         return try {
             val userId = auth.currentUser?.uid ?: throw Exception("User not authenticated")
+            val userDocument = firestore.collection("Users").document(userId).get().await()
+            val userName = userDocument.getString("username") ?: ""
+            val userPhotoUrl = userDocument.getString("userPhotoUrl") ?: ""
             val statusDocumentRef = firestore.collection("statuses").document(userId)
             val existingStatus = statusDocumentRef.get().await()
+            val now = Timestamp.now()
+            val expiresAt = Timestamp(now.seconds + 86400, now.nanoseconds) // 24 hours from now
 
             if (existingStatus.exists()) {
                 // Update existing status
@@ -33,10 +38,22 @@ class StatusRepositoryImpl @Inject constructor(
                 val updatedStatusItems = existingStatusData?.statusItems?.toMutableList() ?: mutableListOf()
                 updatedStatusItems.addAll(status.statusItems)
 
-                statusDocumentRef.update("statusItems", updatedStatusItems).await()
-            } else {
+                statusDocumentRef.update(mapOf(
+                    "statusItems" to updatedStatusItems,
+                    "expiresAt" to expiresAt
+                )).await()
+            }
+            else {
                 // Create new status
-                statusDocumentRef.set(status).await()
+                val newStatus = Status(
+                    userId = userId,
+                    userName = userName,
+                    userPhotoUrl = userPhotoUrl,
+                    statusItems = status.statusItems,
+                    createdAt = now,
+                    expiresAt = expiresAt
+                )
+                statusDocumentRef.set(newStatus).await()
             }
 
             Response.Success(true)
@@ -48,12 +65,25 @@ class StatusRepositoryImpl @Inject constructor(
 
     override suspend fun getStatuses(): Response<List<Status>> {
         return try {
-            // Get the current user's ID
+            // Get the current user's ID (we don't need it for now, but we might later)
             val currentUserId = auth.currentUser?.uid ?: throw Exception("User not authenticated")
 
-            // Get the user's contacts (replace this with your actual logic to get contacts)
-            // For now, we'll just use a dummy list of contact IDs
-            val contactIds = listOf("user1", "user2", "user3") // Replace with actual contact IDs
+            // Option 1: Get all statuses (no contact filtering)
+            val statusesQuery = firestore.collection("statuses")
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .get()
+                .await()
+
+            // Option 2: Get statuses from contacts (when contact feature is implemented)
+            /*
+            // Fetch the current user's document from Firestore
+            val userDocument = firestore.collection("Users")
+                .document(currentUserId)
+                .get()
+                .await()
+
+            // Extract the contactIds from the user document
+            val contactIds = userDocument.get("contacts") as? List<String> ?: emptyList()
 
             // Query Firestore for statuses from contacts
             val statusesQuery = firestore.collection("statuses")
@@ -61,6 +91,7 @@ class StatusRepositoryImpl @Inject constructor(
                 .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .await()
+            */
 
             val statuses = statusesQuery.mapNotNull { document ->
                 document.toObject<Status>()
