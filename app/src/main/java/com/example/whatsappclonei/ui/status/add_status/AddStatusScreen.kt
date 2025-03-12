@@ -379,7 +379,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.whatsappclonei.data.model.Response
-import com.example.whatsappclonei.ui.status.add_status.util.BitmapUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -394,8 +393,11 @@ fun AddStatusScreen(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         selectedImageUri = uri
-        uri?.let {
+        /*uri?.let {
             bitmap = BitmapUtils.getBitmapFromUri(context, it)
+        }*/
+        uri?.let {
+            navController.navigate("preview"+"?uri=${it}")
         }
     }
     val addStatusResponse = viewModel.addStatusResponse.value

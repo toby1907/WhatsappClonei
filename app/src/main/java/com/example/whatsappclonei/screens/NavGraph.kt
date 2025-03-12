@@ -1,11 +1,13 @@
 package com.example.whatsappclonei.screens
 
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -24,6 +26,7 @@ import com.example.whatsappclonei.ui.splash.SplashScreen
 import com.example.whatsappclonei.ui.status.UserStatusesScreen
 import com.example.whatsappclonei.ui.status.add_status.AddStatusScreen
 import com.example.whatsappclonei.ui.status.add_status.CreateStatusScreen
+import com.example.whatsappclonei.ui.status.preview.ImagePreviewScreen
 import com.example.whatsappclonei.ui.status.screens.StatusListScreen
 
 
@@ -156,6 +159,19 @@ fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState,
     composable(route = STATUSESPREVIEW){
 
         UserStatusesScreen()
+    }
+    composable(route = "preview"+"?uri={uri}",
+        arguments = listOf(
+            navArgument("uri"){
+                type = NavType.StringType
+                defaultValue = ""
+            }
+        )
+        ){
+        ImagePreviewScreen(
+            navController = appState.navController,
+            imageUri = Uri.parse(it.arguments?.getString("uri"))
+        )
     }
 
 
