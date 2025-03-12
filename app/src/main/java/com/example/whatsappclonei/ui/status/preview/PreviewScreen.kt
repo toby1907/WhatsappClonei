@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -135,17 +136,21 @@ fun ImagePreviewScreen(
         ) {
             Button(
                 onClick = {
-                    viewModel.uploadMedia(imageUri, "image")
+                    viewModel.uploadMedia(imageUri, "image","")
                 },
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp),
+               colors = ButtonDefaults.buttonColors(
+                   containerColor = MaterialTheme.colorScheme.primary,
+                   contentColor = Color.White
+               )
             ) {
                 Icon(
                     imageVector = Icons.Filled.Send,
-                    contentDescription = "Send",
+                    contentDescription = "Post",
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Send")
+                Text("Post")
             }
         }
         if (addStatusResponse is Response.Loading || viewModel.isUploading.value) {

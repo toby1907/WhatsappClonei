@@ -50,14 +50,20 @@ class AddStatusViewModel @Inject constructor(
         addStatusResponse.value = Response.Success(false)
     }
 
-    fun uploadMedia(uri: Uri, type: String) {
+    fun uploadMedia(uri: Uri, type: String, statusText: String) {
         viewModelScope.launch {
-            isUploading.value = true
-            val downloadUrl = FirebaseStorageManager.uploadMedia(
-                uri = uri,
-                type = type,
-                progress = uploadProgress
-            )
+            if (type == "text") {
+                val statusItem = StatusItem(type = "text", text = statusText)
+                createStatus(statusItem)
+                return@launch
+            }
+                isUploading.value = true
+                val downloadUrl = FirebaseStorageManager.uploadMedia(
+                    uri = uri,
+                    type = type,
+                    progress = uploadProgress
+                )
+
             isUploading.value = false
             if (downloadUrl != null) {
                 val statusItem = when (type) {
@@ -76,8 +82,11 @@ class AddStatusViewModel @Inject constructor(
         viewModelScope.launch {
             // Convert Bitmap to Uri
             val uri = bitmapToUri(bitmap)
-            uploadMedia(uri, "image")
+            uploadMedia(uri, "image", "")
         }
+    }
+    fun createTextStatus(statusText: String) {
+        uploadMedia(Uri.EMPTY, "text", statusText)
     }
 
     private fun bitmapToUri(bitmap: Bitmap): Uri {
