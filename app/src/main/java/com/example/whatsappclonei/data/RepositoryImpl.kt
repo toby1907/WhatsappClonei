@@ -51,6 +51,8 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun firebaseSignUpWithEmailAndPassword(
         email: String, password: String, username: String
     ): SignUpResponse {
+
+
         val user = hashMapOf(
             "email" to currentUser?.email,
             "username" to username,
@@ -145,9 +147,6 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun getAccounts(): AccountsResponse {
         val users = mutableStateListOf<User>()
-
-
-
         return try {
 
             firestore.collection("Users")
@@ -458,10 +457,11 @@ class AuthRepositoryImpl @Inject constructor(
                     // Check if the user exists in Firestore
                     val userId = auth.currentUser?.uid
                     if (userId != null) {
-                        firestore.collection("Users").whereEqualTo("userId", userId).get()
+                        // Use the userId as the document ID
+                        firestore.collection("Users").document(userId).get()
                             .addOnCompleteListener { queryTask ->
                                 if (queryTask.isSuccessful) {
-                                    if (queryTask.result.isEmpty) {
+                                    if (!queryTask.result.exists()) {
                                         // User doesn't exist, create a new user document
                                         val phoneNumber = auth.currentUser?.phoneNumber
                                         val user = hashMapOf(
@@ -469,7 +469,8 @@ class AuthRepositoryImpl @Inject constructor(
                                             "userId" to userId,
                                             "phoneNumber" to phoneNumber
                                         )
-                                        firestore.collection("Users").add(user)
+                                        // Use set() with the userId as the document ID
+                                        firestore.collection("Users").document(userId).set(user)
                                             .addOnCompleteListener { addUserTask ->
                                                 if (addUserTask.isSuccessful) {
                                                     Log.d(TAG, "New user created successfully!")
@@ -497,6 +498,8 @@ class AuthRepositoryImpl @Inject constructor(
                 }
             }
     }
+
+
     override fun isUserAuthenticated(): Boolean {
         return auth.currentUser != null
     }

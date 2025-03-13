@@ -24,6 +24,7 @@ class StatusRepositoryImpl @Inject constructor(
     override suspend fun createStatus(status: Status): Response<Boolean> {
         return try {
             val userId = auth.currentUser?.uid ?: throw Exception("User not authenticated")
+
             val userDocument = firestore.collection("Users").document(userId).get().await()
             val userName = userDocument.getString("username") ?: ""
             val userPhotoUrl = userDocument.getString("userPhotoUrl") ?: ""

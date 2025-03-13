@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.whatsappclonei.R
 import com.example.whatsappclonei.WhatsappCloneiAppState
+import com.example.whatsappclonei.screens.CREATE_STATUS_SCREEN
 import com.example.whatsappclonei.screens.PROFILE_SCREEN
 import com.example.whatsappclonei.screens.STATUS_SCREEN
 import com.example.whatsappclonei.ui.status.components.AppBar
@@ -53,7 +54,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeScreen(appState: WhatsappCloneiAppState) {
+fun HomeScreen(appState: WhatsappCloneiAppState,openAndPopUp: (String,String) -> Unit) {
     val viewPagerState = rememberPagerState( pageCount = { 3 } )
     val scope = rememberCoroutineScope()
     var actionButtonDrawable = remember {
@@ -63,6 +64,10 @@ fun HomeScreen(appState: WhatsappCloneiAppState) {
 
     val navigationItems = listOf(
         NavigationItem(
+            title = stringResource(id = R.string.messages),
+            icon = R.drawable.chats_icon,
+            screen = 0
+        ),  NavigationItem(
             title = stringResource(id = R.string.status),
             icon = R.drawable.status_icon,
             screen = 1
@@ -72,11 +77,7 @@ fun HomeScreen(appState: WhatsappCloneiAppState) {
             icon = R.drawable.call_icon,
             screen = 2
         ),
-        NavigationItem(
-            title = stringResource(id = R.string.messages),
-            icon = R.drawable.chats_icon,
-            screen = 0
-        ),
+
         NavigationItem(
             title = stringResource(id = R.string.settings),
             icon = R.drawable.settings_icon,
@@ -88,7 +89,7 @@ fun HomeScreen(appState: WhatsappCloneiAppState) {
         scope.launch {
             when (viewPagerState.currentPage) {
                 0 -> actionButtonDrawable.value = R.drawable.ic_chat_filled
-                1 -> actionButtonDrawable.value = R.drawable.ic_camera
+                1 -> actionButtonDrawable.value = R.drawable.edit
                 2 -> actionButtonDrawable.value = R.drawable.ic_add_call
             }
          //   viewPagerState.animateScrollToPage(selectedTab)
@@ -128,6 +129,9 @@ LaunchedEffect(key1 = viewPagerState.currentPage) {
                                 ))
 
                         }
+                    },
+                    actionMenu = {
+                        appState.navigate(PROFILE_SCREEN)
                     }
 
                 )
@@ -161,7 +165,22 @@ LaunchedEffect(key1 = viewPagerState.currentPage) {
           ) {
            Box(modifier = Modifier.fillMaxWidth())   {
                   FloatingActionButton(
-                      onClick = {},
+                      onClick = {
+                          when (viewPagerState.currentPage) {
+                             0 ->{
+
+                             }
+                              1 ->{
+                                  openAndPopUp(
+                                      CREATE_STATUS_SCREEN,
+                                      STATUS_SCREEN
+                                  )
+                              }
+                              2 ->{
+
+                              }
+                          }
+                      },
                       modifier = Modifier
                           .padding(16.dp)
                           .size(60.dp)

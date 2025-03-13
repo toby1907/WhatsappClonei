@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.whatsappclonei.ui.status.components.ListHeader
 import com.example.whatsappclonei.ui.status.components.StatusImageSection
 import com.example.whatsappclonei.ui.status.components.StatusUpdateSection
@@ -16,15 +17,21 @@ import com.example.whatsappclonei.ui.status.data.statusList
 import com.example.whatsappclonei.ui.status.domain.StatusUpdateCategory
 import com.example.whatsappclonei.R
 import com.example.whatsappclonei.components.ext.fieldModifier
+import com.example.whatsappclonei.data.model.StatusItem
 import com.example.whatsappclonei.screens.CREATE_STATUS_SCREEN
 import com.example.whatsappclonei.screens.STATUSESPREVIEW
 import com.example.whatsappclonei.screens.STATUS_SCREEN
+import com.example.whatsappclonei.ui.status.StatusViewModel
+import com.example.whatsappclonei.ui.status.toFormattedString
+import com.google.firebase.Timestamp
 
 @Composable
 fun StatusListScreen(
-    openAndPopUp: (String,String) -> Unit
+    openAndPopUp: (String,String) -> Unit,
+    viewModel: StatusViewModel = hiltViewModel()
 )
 {
+    val statuses = viewModel.statuses.value
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -50,16 +57,16 @@ fun StatusListScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
         items(
-            items = statusList.filter { it.category == StatusUpdateCategory.RECENT },
+            items = statuses,
             key = { status ->
-                status.id
+                status.userId
             }
         ) { status ->
+
             StatusRowSection(
-                statusCount = status.statusCount,
-                statusImage = status.statusImage,
+                statusImage = status.userPhotoUrl,
                 header = status.userName,
-                subHeader = status.timeStamp,
+                subHeader = status.statusItems[0].timestamp.toDate().toFormattedString(),
                 modifier = Modifier.clickable {
                     openAndPopUp(
                         STATUSESPREVIEW,
@@ -68,7 +75,7 @@ fun StatusListScreen(
                 }
             )
         }
-        item {
+        /*item {
             Spacer(modifier = Modifier.height(24.dp))
             ListHeader(
                 stringResource(id = R.string.viewed_updates)
@@ -87,14 +94,11 @@ fun StatusListScreen(
                 header = status.userName,
                 subHeader = status.timeStamp,
                 modifier = Modifier.clickable {
-                    openAndPopUp(
-                        CREATE_STATUS_SCREEN,
-                        STATUS_SCREEN
-                    )
+
                 }
             )
             Spacer(modifier = Modifier.height(24.dp))
-        }
+        }*/
         item {
             Spacer(modifier = Modifier.height(75.dp))
         }
