@@ -100,7 +100,8 @@ fun NavGraphBuilder.WhatsappCloneNavGraph(appState: WhatsappCloneiAppState,
         route = MESSAGE_SCREEN
     ) {
         HomeScreen(
-            appState = appState
+            appState = appState,
+            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
         )
 
     }

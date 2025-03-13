@@ -44,10 +44,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.whatsappclonei.R
 import com.example.whatsappclonei.data.model.Status
 import com.example.whatsappclonei.data.model.StatusItem
+import com.example.whatsappclonei.ui.status.components.DownloadableImage
+import com.example.whatsappclonei.ui.status.components.VideoPlayer
 import com.example.whatsappclonei.ui.theme.White
 import com.example.whatsappclonei.utils.DummyData
 import kotlinx.coroutines.delay
@@ -58,10 +61,16 @@ import java.util.Locale
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UserStatusesScreen(
-    statuses: List<Status> = DummyData.getDummyStatuses(), // List of statuses for all users
+
     onBackClick: () -> Unit = {},
-    onMenuClick: () -> Unit = {}
+    onMenuClick: () -> Unit = {},
+  viewModel: StatusViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(key1 = viewModel.statuses.value) {
+
+        viewModel.getStatuses()
+    }
+    val statuses = viewModel.statuses.value
     val pagerState = rememberPagerState(pageCount = { statuses.size })
 
     HorizontalPager(state = pagerState) { page ->
@@ -90,7 +99,7 @@ fun UserStatusPage(
             progress[currentStatusItemIndex].animateTo(
                 targetValue = 1f,
                 animationSpec = tween(
-                    durationMillis = 30000, // 30 seconds per status item
+                    durationMillis = 10000, // 30 seconds per status item
                     easing = LinearEasing
                 )
             )
@@ -112,13 +121,33 @@ fun UserStatusPage(
             .fillMaxSize()
     ) {
         // Status Content (Image/Video)
-     /*   AsyncImage(
-            model = status.statusItems[currentStatusItemIndex].imageUrl,
-            contentDescription = "Status Image",
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )*/
+        val currentStatusItem = status.statusItems[currentStatusItemIndex]
+        when (currentStatusItem.type) {
+            "image" -> {
+                DownloadableImage(imageUrl = currentStatusItem.imageUrl ?: "")
+            }
 
+            "video" -> {
+                // Implement video player here
+                // You can use a library like ExoPlayer
+                VideoPlayer(videoUri = currentStatusItem.videoUrl ?: "")
+            }
+
+            "text" -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = currentStatusItem.text ?: "",
+                        color = Color.White,
+                        fontSize = 24.sp
+                    )
+                }
+            }
+        }
 
 
         Column(

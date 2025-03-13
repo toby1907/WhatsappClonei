@@ -53,13 +53,18 @@ fun ImagePreviewScreen(
     viewModel: AddStatusViewModel = hiltViewModel()
 ){
 
-
     val context = LocalContext.current
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
     val addStatusResponse = viewModel.addStatusResponse.value
 
     LaunchedEffect(key1 = imageUri) {
        bitmap = BitmapUtils.getBitmapFromUri(context, imageUri)
+    }
+    LaunchedEffect(key1 = addStatusResponse) {
+        if (addStatusResponse is Response.Success) {
+            Toast.makeText(context, "Status added successfully", Toast.LENGTH_SHORT).show()
+            navController.navigateUp()
+        }
     }
     Column(
         modifier = Modifier

@@ -37,7 +37,7 @@ class StatusViewModel @Inject constructor(
                 }
 
                 is Response.Failure -> {
-                    // Handle error
+
                 }
 
                 else -> {

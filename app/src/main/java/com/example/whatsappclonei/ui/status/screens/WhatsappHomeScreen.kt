@@ -27,6 +27,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.whatsappclonei.R
+import com.example.whatsappclonei.screens.CREATE_STATUS_SCREEN
+import com.example.whatsappclonei.screens.STATUS_SCREEN
 import com.example.whatsappclonei.ui.status.components.AppBar
 import com.example.whatsappclonei.ui.status.components.TabBar
 import com.example.whatsappclonei.ui.theme.PrimaryGreen_A102
@@ -35,7 +37,9 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun WhatsappHomeScreen() {
+fun WhatsappHomeScreen(
+    openAndPopUp: (String,String) -> Unit
+) {
     val viewPagerState = rememberPagerState(initialPage = 0, pageCount = { 0 })
     val scope = rememberCoroutineScope()
     var actionButtonDrawable by remember {
@@ -47,13 +51,19 @@ fun WhatsappHomeScreen() {
             modifier = Modifier.fillMaxSize(),
         ) {
             Column {
-                AppBar(title = {
-                    when (viewPagerState.currentPage) {
-                        0 -> Text(text = stringResource(id = R.string.messages))
-                        1 -> Text(text = stringResource(id = R.string.status))
-                        2 -> Text(text = stringResource(id = R.string.calls))
+                AppBar(
+                    title = {
+                        when (viewPagerState.currentPage) {
+                            0 -> Text(text = stringResource(id = R.string.messages))
+                            1 -> Text(text = stringResource(id = R.string.status))
+                            2 -> Text(text = stringResource(id = R.string.calls))
+                        }
+                    },
+
+                    actionMenu = {
+
                     }
-                })
+                )
                 TabBar(
                     initialIndex = 0,
                     pagerState = viewPagerState
@@ -85,7 +95,23 @@ fun WhatsappHomeScreen() {
                 }
             }
             FloatingActionButton(
-                onClick = {},
+                onClick = {
+
+                    when(viewPagerState.currentPage){
+                        0 ->{
+
+                        }
+                        1 -> {
+                            openAndPopUp(
+                                CREATE_STATUS_SCREEN,
+                                STATUS_SCREEN
+                            )
+                        }
+                        2 ->{
+
+                        }
+                    }
+                },
                 modifier = Modifier
                     .padding(16.dp)
                     .size(60.dp)
