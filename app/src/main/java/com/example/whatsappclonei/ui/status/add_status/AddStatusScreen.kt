@@ -331,6 +331,7 @@ fun CreateStatusScreen(
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -403,7 +404,8 @@ fun AddStatusScreen(
             bitmap = BitmapUtils.getBitmapFromUri(context, it)
         }*/
         uri?.let {
-            navController.navigate("preview" + "?uri=${it}")
+            Log.d("uri",it.toString())
+            navController.navigate("preview"+"?uri=${it}")
         }
     }
     val addStatusResponse = viewModel.addStatusResponse.value

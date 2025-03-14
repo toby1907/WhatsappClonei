@@ -3,9 +3,12 @@ package com.example.whatsappclonei.ui.onboarding.phone_no
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -13,6 +16,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -203,21 +207,45 @@ fun AddPhoneNoScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(padding),
+                        .padding(8.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Text(
+                        text = "Please enter the code sent to you phone no ",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            lineHeight = 20.sp,
+
+                            color = colorScheme.onBackground,
+
+                            textAlign = TextAlign.Center,
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
                     TextField(
                         value = verificationCode,
+                        shape = RoundedCornerShape(4.dp),
                         onValueChange = {
                             viewModel.onverificationCodeEntered(it)
                         },
-                        label = { Text("Verification Code") }
+                        label = { Text("Verification Code") },
+                        colors = TextFieldDefaults.colors(
+                            focusedTextColor = colorScheme.onBackground,
+                            unfocusedTextColor = colorScheme.onBackground,
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                        )
                     )
+                    Spacer(modifier = Modifier.height(16.dp))
                     Button(onClick = {
                         viewModel.signInWithPhoneAuthCredential(verificationCode)
-                    }) {
-                        Text("Submit Code")
+                    },
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text("Submit Code",
+                            color = colorScheme.onBackground
+                            )
                     }
                 }
             } else {
@@ -266,8 +294,8 @@ fun PhoneFieldContent(modifier: Modifier, viewModel: ValidationViewModel) {
                 },
                 modifier = Modifier.padding(16.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black,
+                    focusedTextColor = colorScheme.onBackground,
+                    unfocusedTextColor = colorScheme.onBackground,
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
                 ),
