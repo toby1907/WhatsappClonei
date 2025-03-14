@@ -186,6 +186,7 @@ LaunchedEffect(key1 = viewPagerState.currentPage) {
                           .size(60.dp)
                           .align(Alignment.CenterEnd),
                       shape = CircleShape,
+                      containerColor = MaterialTheme.colorScheme.primary
                   ) {
                       Icon(
                           painter = painterResource(actionButtonDrawable.value),

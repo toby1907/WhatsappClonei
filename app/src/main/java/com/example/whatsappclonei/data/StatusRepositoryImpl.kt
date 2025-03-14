@@ -10,6 +10,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import java.util.Calendar
 import javax.inject.Inject
@@ -64,45 +67,27 @@ class StatusRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getStatuses(): Response<List<Status>> {
-        return try {
-            // Get the current user's ID (we don't need it for now, but we might later)
-            val currentUserId = auth.currentUser?.uid ?: throw Exception("User not authenticated")
+    override fun getStatuses(): Flow<Response<List<Status>>> =
+        callbackFlow {
+        trySend(Response.Loading)
+        val listenerRegistration = firestore.collection("statuses")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    trySend(Response.Failure(error))
+                    return@addSnapshotListener
+                }
 
-            // Option 1: Get all statuses (no contact filtering)
-            val statusesQuery = firestore.collection("statuses")
-                .orderBy("createdAt", Query.Direction.DESCENDING)
-                .get()
-                .await()
-
-            // Option 2: Get statuses from contacts (when contact feature is implemented)
-            /*
-            // Fetch the current user's document from Firestore
-            val userDocument = firestore.collection("Users")
-                .document(currentUserId)
-                .get()
-                .await()
-
-            // Extract the contactIds from the user document
-            val contactIds = userDocument.get("contacts") as? List<String> ?: emptyList()
-
-            // Query Firestore for statuses from contacts
-            val statusesQuery = firestore.collection("statuses")
-                .whereIn("userId", contactIds)
-                .orderBy("createdAt", Query.Direction.DESCENDING)
-                .get()
-                .await()
-            */
-
-            val statuses = statusesQuery.mapNotNull { document ->
-                document.toObject<Status>()
+                if (snapshot != null) {
+                    val statuses = snapshot.documents.mapNotNull { document ->
+                        document.toObject(Status::class.java)
+                    }
+                    trySend(Response.Success(statuses))
+                } else {
+                    trySend(Response.Failure(Exception("No statuses found")))
+                }
             }
 
-            Response.Success(statuses)
-        } catch (e: Exception) {
-            Log.e(TAG, "Error getting statuses: ${e.message}")
-            Response.Failure(e)
-        }
+           awaitClose { listenerRegistration.remove() }
     }
 
     override suspend fun addViewer(userId: String, statusId: String, statusItem: StatusItem): Response<Boolean> {

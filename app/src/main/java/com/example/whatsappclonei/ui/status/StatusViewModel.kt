@@ -8,6 +8,9 @@ import com.example.whatsappclonei.data.model.Response
 import com.example.whatsappclonei.data.model.Status
 import com.example.whatsappclonei.data.model.StatusItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,36 +19,19 @@ class StatusViewModel @Inject constructor(
     private val statusRepository: StatusRepository
 ) : ViewModel() {
 
-    var statuses = mutableStateOf<List<Status>>(emptyList())
-        private set
+
     var createStatusResponse = mutableStateOf<Response<Boolean>>(Response.None)
         private set
     var addViewerResponse = mutableStateOf<Response<Boolean>>(Response.None)
         private set
     var deleteExpiredStatusesResponse = mutableStateOf<Response<Boolean>>(Response.None)
         private set
-
-    init {
-        getStatuses()
-    }
-
-    fun getStatuses() {
-        viewModelScope.launch {
-            when (val response = statusRepository.getStatuses()) {
-                is Response.Success -> {
-                    statuses.value = response.data
-                }
-
-                is Response.Failure -> {
-
-                }
-
-                else -> {
-
-                }
-            }
-        }
-    }
+    val statuses: StateFlow<Response<List<Status>>> = statusRepository.getStatuses()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = Response.Loading
+        )
 
     fun createStatus(status: Status) {
         viewModelScope.launch {
