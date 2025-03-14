@@ -22,17 +22,17 @@ This project is a simplified clone of the popular WhatsApp messaging application
 - **[Coil](https://coil-kt.github.io/coil/)**: A library for playing audio and video content. Used to display video statuses.
 
 ## Screenshots
-|   ::::::::::::::::::::::::::::::::::::::::    |   ::::::::::::::::::::::::::::::::::::::::    |      ::::::::::::::::::::::::::::::::::::::::       |       ::::::::::::::::::::::::::::::::::::::::        |    ::::::::::::::::::::::::::::::::::::::::     |        ::::::::::::::::::::::::::::::::::::::::         |
-|:---------------------------------------------:|:---------------------------------------------:|:---------------------------------------------------:|:-----------------------------------------------------:|:-----------------------------------------------:|:-------------------------------------------------------:|
-| ![home screen](./screenshots/home_screen.jpg) | ![edit screen](./screenshots/edit_screen.jpg) | ![preview screen](./screenshots/preview_screen.jpg) | ![calendar screen](./screenshots/calendar_screen.jpg) | ![media screen](./screenshots/media_screen.jpg) | ![favorites screen](./screenshots/favorites_screen.jpg) |
+|       ::::::::::::::::::::::::::::::::::::::::       |       ::::::::::::::::::::::::::::::::::::::::       |   ::::::::::::::::::::::::::::::::::::::::   |    ::::::::::::::::::::::::::::::::::::::::     |    ::::::::::::::::::::::::::::::::::::::::     |      ::::::::::::::::::::::::::::::::::::::::      |     ::::::::::::::::::::::::::::::::::::::::      |    ::::::::::::::::::::::::::::::::::::::::    |
+|:----------------------------------------------------:|:----------------------------------------------------:|:--------------------------------------------:|:-----------------------------------------------:|:-----------------------------------------------:|:--------------------------------------------------:|:-------------------------------------------------:|:----------------------------------------------:|
+| ![Verification Screen](./screenshots/screen%201.jpg) | ![Confirm_Code_Screen](./screenshots/screen%202.jpg) | ![Home Screen](./screenshots/screen%203.jpg) | ![Chat Screen 01](./screenshots/screen%204.jpg) | ![Chat Screen 02](./screenshots/screen%205.jpg) | ![StatusList Screen](./screenshots/screen%206.jpg) | ![StatusAdd Screen](./screenshots/screen%208.jpg) | ![Status Screen](./screenshots/screen%207.jpg) |
 
 ## Setup Instructions
 
 1. **Clone the repository to your local machine.**
 ```bash
-git clone  https://github.com/toby1907/VoiceJournal.git
+git clone  https://github.com/toby1907/WhatsappClonei.git
 
-cd VoiceJournal/
+cd WhatsappClonei/
 ```
 2. **Open in Android Studio**
 - Open Android Studio
