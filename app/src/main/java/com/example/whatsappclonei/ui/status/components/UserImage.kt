@@ -12,18 +12,20 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.whatsappclonei.R
 
-
 @Composable
 fun RemoteImage(
     imageUrl: String? = null,
     hasBorder: Boolean = false,
 ) {
+    val context = LocalContext.current
+    val imageRequest = ImageRequest.Builder(context)
+        .placeholder(R.drawable.img_default_user)
+        .data(imageUrl.takeIf { !it.isNullOrEmpty() } ?: R.drawable.img_default_user)
+        .crossfade(true)
+        .build()
+
     AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .placeholder(R.drawable.img_default_user)
-            .data(imageUrl)
-            .crossfade(true)
-            .build(),
+        model = imageRequest,
         contentDescription = null,
         modifier = Modifier
             .size(50.dp)

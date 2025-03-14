@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -45,8 +46,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.whatsappclonei.R
+import com.example.whatsappclonei.data.model.Response
 import com.example.whatsappclonei.data.model.Status
 import com.example.whatsappclonei.data.model.StatusItem
 import com.example.whatsappclonei.ui.status.components.DownloadableImage
@@ -61,25 +64,43 @@ import java.util.Locale
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UserStatusesScreen(
-
     onBackClick: () -> Unit = {},
     onMenuClick: () -> Unit = {},
-  viewModel: StatusViewModel = hiltViewModel()
+    viewModel: StatusViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(key1 = viewModel.statuses.value) {
+    val statusesResponse by viewModel.statuses.collectAsStateWithLifecycle()
 
-        viewModel.getStatuses()
-    }
-    val statuses = viewModel.statuses.value
-    val pagerState = rememberPagerState(pageCount = { statuses.size })
+    when (statusesResponse) {
+        is Response.Loading -> {
+            // Show a loading indicator
+            CircularProgressIndicator()
+        }
+        is Response.Success -> {
+            val statuses = (statusesResponse as Response.Success<List<Status>>).data
+            if (statuses.isEmpty()) {
+                // Show a message if there are no statuses
+                Text("No statuses available")
+            } else {
+                val pagerState = rememberPagerState(pageCount = { statuses.size })
 
-    HorizontalPager(state = pagerState) { page ->
-        val userStatus = statuses[page]
-        UserStatusPage(
-            status = userStatus,
-            onBackClick = onBackClick,
-            onMenuClick = onMenuClick
-        )
+                HorizontalPager(state = pagerState) { page ->
+                    val userStatus = statuses[page]
+                    UserStatusPage(
+                        status = userStatus,
+                        onBackClick = onBackClick,
+                        onMenuClick = onMenuClick
+                    )
+                }
+            }
+        }
+        is Response.Failure -> {
+            // Show an error message
+            Text("Error loading statuses")
+        }
+
+        Response.None -> {
+
+        }
     }
 }
 
